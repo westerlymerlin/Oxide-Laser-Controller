@@ -1,0 +1,18 @@
+[Unit]
+Description=daemon for Valve Controller Web Serice
+After=network.target
+
+
+[Service]
+User=pi
+Group=www-data
+RuntimeDirectory=/home/pi/
+WorkingDirectory=/home/pi/
+Environment="PATH=/home/pi/.venv/bin"
+ExecStart=/home/pi/.venv/bin/gunicorn --worker-class gthread --workers 1 --threads 1000 --bind=unix:/tmp/gunicorn.sock --access-logfile=/home/pi/logs/gunicorn-access.log --error-logfile=/home/pi/logs/gunicorn-error.log  app:app
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+
