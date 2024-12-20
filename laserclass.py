@@ -22,13 +22,23 @@ class LaserClass:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(16, GPIO.IN)  # Door Interlock
         GPIO.setup(12, GPIO.IN)  # Key Switch
-        #self.pwm = GPIO.PWM(18, settings['frequency'])
+        GPIO.setup(18, GPIO.OUT)
+        self.pwm = GPIO.PWM(18, settings['frequency'])
         logger.info('Laser Class initialised')
 
     def httpstatus(self):
-        """Return the status (firning), power and timeout values, is called via the web page"""
-        httpreturn = [['laser firing', self.laserstate], ['laser power', settings['power']],
-                      ['Laser Timeout (s)', settings['maxtime']]]
+        """Return the status (Firing), power and timeout values, is called via the web page"""
+        if self.keyswitch():
+            keyswitch = 'off'
+        else:
+            keyswitch = 'on'
+        if self.doorinterlock():
+            doorinterlock = 'open'
+        else:
+            doorinterlock = 'closwed'
+        httpreturn = [['Firing', self.laserstate], ['Power', settings['power']],
+                      ['Timeout (s)', settings['maxtime']], ['Key Switch', keyswitch],
+                      ['Door Interlock', doorinterlock]]
         return httpreturn
 
     def setpower(self, laserpower):
@@ -43,29 +53,54 @@ class LaserClass:
         logger.info('Changing Laser Maximum on time to %s seconds', maxtime)
         writesettings()
 
+    def keyswitch(self):
+        """Check if the key switch is on"""
+        if GPIO.input(12) == 1:
+            return 0
+        else:
+            return 1
+
+    def doorinterlock(self):
+        """Check if the door interlock is engaged"""
+        if GPIO.input(16) == 1:
+            return 0
+        else:
+            return 1
+
+    def alarmstatus(self):
+        """Check if the key and door interlock is engaged"""
+        if settings['testmode'] == True:
+            return 0
+        return self.keyswitch() + self.doorinterlock()
 
     def laserstatus(self):
         """Return the laser (firning) status and the power setting"""
-        return {'laser': self.laserstate, 'power': settings['power']}
+        return {'laser': self.laserstate, 'power': settings['power'], 'keyswitch': self.keyswitch(),
+                'doorinterlock': self.doorinterlock()}
 
     def laser(self, state):
         """Switch on or off the laser, if laser is on then run a thread to switch off if max time is exceeded"""
         if state == 1:
+            if self.alarmstatus() > 0:
+                logger.warning('Laser was not switched on, key switch or door interlock was engaged')
+                self.laserstate = 0
+                return
             logger.info('Laser is on')
+            self.pwm.start(self.dutycycle)
             self.laserstate = 1
-            #self.pwm.start(self.dutycycle)
+
             # Start a  timer for the laser, if the laser is not shutdown by PyMS then this timer will shut it down
             timerthread = Timer(settings['maxtime'], lambda: self.laser(2))
             timerthread.name = 'laser-off-timer-thread'
             timerthread.start()
         elif state == 2:
             logger.info('Laser Auto shut off')
+            self.pwm.stop()
             self.laserstate = 0
-            #self.pwm.stop()
         else:
             logger.info('Laser is off')
             self.laserstate = 0
-            GPIO.output(16, 0)
+            self.pwm.stop()
 
 
 

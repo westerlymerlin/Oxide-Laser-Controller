@@ -6,7 +6,7 @@ import random
 import json
 from datetime import datetime
 
-VERSION = '1.0.0'
+VERSION = '1.0.1'
 
 def initialise():
     """Setup the settings structure with default values"""
@@ -21,9 +21,10 @@ def initialise():
                  'frequency': 1000,
                  'power': 25,
                  'maxtime': 500,
+                 'testmode': False,
                  'pyro-laseroff': 'pQCl',  # base64 encoded
                  'pyro-laseron': 'pQGk',  # base64 encoded
-                 'pyro-port': '/dev/ttyUSB03',
+                 'pyro-port': '/dev/ttyUSB0',
                  'pyro-speed': 115200,
                  'pyro-readlaser': 'JQ==',  # base64 encoded
                  'pyro-readtemp': 'AQ==',  # base64 encoded
