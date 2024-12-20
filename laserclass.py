@@ -22,7 +22,7 @@ class LaserClass:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(16, GPIO.IN)  # Door Interlock
         GPIO.setup(12, GPIO.IN)  # Key Switch
-        self.pwm = GPIO.PWM(18, settings['frequency'])
+        #self.pwm = GPIO.PWM(18, settings['frequency'])
         logger.info('Laser Class initialised')
 
     def httpstatus(self):
@@ -53,7 +53,7 @@ class LaserClass:
         if state == 1:
             logger.info('Laser is on')
             self.laserstate = 1
-            self.pwm.start(self.dutycycle)
+            #self.pwm.start(self.dutycycle)
             # Start a  timer for the laser, if the laser is not shutdown by PyMS then this timer will shut it down
             timerthread = Timer(settings['maxtime'], lambda: self.laser(2))
             timerthread.name = 'laser-off-timer-thread'
@@ -61,7 +61,7 @@ class LaserClass:
         elif state == 2:
             logger.info('Laser Auto shut off')
             self.laserstate = 0
-            self.pwm.stop()
+            #self.pwm.stop()
         else:
             logger.info('Laser is off')
             self.laserstate = 0
