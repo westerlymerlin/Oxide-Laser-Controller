@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="30" >
+<title>London Geochronology Centre - {{appname}}</title>
+<link href="{{ url_for('static',filename='css/text.css') }}" rel="stylesheet" type="text/css">
+<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+</head>
+<body>
+	  <section class="banner">
+		  <div >
+              <P class="logo">London Geochronology Centre - {{appname}} - Server Status &nbsp CPU {{cputemperature}}&deg;C</P>
+              <p class="breadcrumbtext"><a href = "/" class="breadcrumblink">Return to index</a> &nbsp|&nbsp
+              <a href = "/pylog" class="breadcrumblink">Application Log</a> &nbsp|&nbsp
+              <a href = "/guaccesslog" class="breadcrumblink">Website Access Log</a> &nbsp|&nbsp
+              <a href = "/guerrorlog" class="breadcrumblink">Website Error Log</a> &nbsp|&nbsp
+              <a href = "/syslog" class="breadcrumblink">System Log</a></p><br>
+          </div>
+  </section>
+<section class="container2">
+    <p class="sectiontext"> Laser Status</p>
+        <table>
+         <thead>
+            <td class="tabledataleft"><B>Description</B></td>
+            <td class="tabledataleft"><B>Status</B></td>
+         </thead>
+         {% for item in laser %}
+            <tr>
+                    <td class="tabledataleft">{{item[0]}}</td>
+                    <td class="tabledataleft">{{item[1]}}</td>
+            </tr>
+         {% endfor %}
+         {% for item in pyro %}
+            <tr>
+                    <td class="tabledataleft">{{item[0]}}</td>
+                    <td class="tabledataleft">{{item[1]}}</td>
+            </tr>
+         {% endfor %}
+         {% for thread in threads %}
+             <tr>
+                    <td class="tabledataleft">Thread</td>
+                    <td class="tabledataleft">{{thread[0]}}</td>
+                    <td class="tabledataleft">{{thread[1]}}</td>
+
+                </tr>
+         {% endfor %}
+
+      </table>
+    <p>&nbsp</p>
+	</section>
+  <section class="banner">
+ <div class ="copyright"><strong>Software Version</strong> {{version}}<br>&copy;2025 - <strong>London Geochronology Centre</strong></div>
+	  </section>
+</body>
+</html>
