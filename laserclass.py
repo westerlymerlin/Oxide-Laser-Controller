@@ -35,9 +35,9 @@ class LaserClass:
         if self.doorinterlock():
             doorinterlock = 'open'
         else:
-            doorinterlock = 'closwed'
-        httpreturn = [['Firing', self.laserstate], ['Power', settings['power']],
-                      ['Timeout (s)', settings['maxtime']], ['Key Switch', keyswitch],
+            doorinterlock = 'closed'
+        httpreturn = [['Status', self.laserstate], ['Power (%)', settings['power']],
+                      ['Auto off (s)', settings['maxtime']], ['Key Switch', keyswitch],
                       ['Door Interlock', doorinterlock]]
         return httpreturn
 
@@ -56,20 +56,20 @@ class LaserClass:
     def keyswitch(self):
         """Check if the key switch is on"""
         if GPIO.input(12) == 1:
-            return 0
-        else:
             return 1
+        else:
+            return 0
 
     def doorinterlock(self):
         """Check if the door interlock is engaged"""
         if GPIO.input(16) == 1:
-            return 0
-        else:
             return 1
+        else:
+            return 0
 
     def alarmstatus(self):
         """Check if the key and door interlock is engaged"""
-        if settings['testmode'] == True:
+        if settings['testmode']:
             return 0
         return self.keyswitch() + self.doorinterlock()
 
@@ -136,6 +136,7 @@ class PyroClass:
             logger.error('PyroClass error opening port %s', self.port.port)
 
     def close(self):
+        """Close the serial port"""
         self.port.close()
         logger.info('Pyrometer port %s closed', self.port.port)
         self.portready = 0
@@ -158,11 +159,11 @@ class PyroClass:
                         self.port.write(self.readlaser)
                         databack = self.port.read(size=100)
                         self.laser = databack[0]
-                    logger.debug('Pump Return "%s" from %s', self.value, self.name)
+                    logger.debug('Temp Return "%s" ', self.value)
                 else:
                     self.value = 0
             except:
-                logger.exception('Pump Error on %s: %s', self.name, Exception)
+                logger.exception('Temperture Error: %s', Exception)
                 self.value = 0
             sleep(5)
 
@@ -229,6 +230,7 @@ def parsecontrol(item, command):
             if command == 'pi':
                 logger.warning('Restart command recieved: system will restart in 15 seconds')
                 timerthread = Timer(15, reboot())
+                timerthread.name = 'reboot-timer-thread'
                 timerthread.start()
                 return laser.laserstatus()
         return laser.laserstatus()

@@ -2,3 +2,4 @@ flask
 gunicorn
 rpi.lgpio
 pyserial
+opencv-python-headless
