@@ -3,15 +3,16 @@ This is the main flask application - called by Gunicorn
 """
 import subprocess
 from threading import enumerate as enumerate_threads
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, Response
 from logmanager import  logger
 from laserclass import pyrometer, parsecontrol, laser
 from app_control import settings, VERSION
+from camera import VideoCamera
 
 logger.info('Starting Valve Controller web app version %s', VERSION)
 logger.info('Api-Key = %s', settings['api-key'])
 app = Flask(__name__)
-
+video_stream = VideoCamera()
 
 def read_log_from_file(file_path):
     """Read a log from a file and reverse the order of the lines so newest is at the top"""
@@ -63,6 +64,18 @@ def api():
         logger.warning('API: Badly formed json message')
         return "badly formed json message", 401
 
+
+def gen(camera):
+    """Image processor, converts the stream of jpegs into an m-jpeg format for the browser"""
+    while True:
+        frame = camera.get_frame()
+        yield b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n'
+
+
+@app.route('/video_feed')
+def video_feed():
+    """The image feed read by the browser"""
+    return Response(gen(video_stream), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/pylog')
 def showplogs():
