@@ -54,18 +54,18 @@ class LaserClass:
         writesettings()
 
     def keyswitch(self):
-        """Check if the key switch is on"""
+        """Check if the key switch is on (N/C contact)"""
         if GPIO.input(12) == 1:
             return 1
         else:
             return 0
 
     def doorinterlock(self):
-        """Check if the door interlock is engaged"""
-        if GPIO.input(16) == 1:
+        """Check if the door interlock is engaged (N/O contact)"""
+        if GPIO.input(16) == 0:
             return 1
         else:
-            return 0
+            return 1
 
     def alarmstatus(self):
         """Check if the key and door interlock is engaged"""
