@@ -9,7 +9,7 @@ from laserclass import pyrometer, parsecontrol, laser
 from app_control import settings, VERSION
 from camera import VideoCamera
 
-logger.info('Starting Valve Controller web app version %s', VERSION)
+logger.info('Starting Laser Controller web app version %s', VERSION)
 logger.info('Api-Key = %s', settings['api-key'])
 app = Flask(__name__)
 video_stream = VideoCamera()
