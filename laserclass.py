@@ -18,12 +18,17 @@ class LaserClass:
         self.frequency = settings['frequency']
         self.dutycycle = settings['power']
         self.laserstate = 0
+        self.laserthread = 0
+        self.maxtime = settings['maxtime']
+        self.key_channel = 12
+        self.door_channel = 16
+        self.ttl_channel = 18
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(16, GPIO.IN)  # Door Interlock
-        GPIO.setup(12, GPIO.IN)  # Key Switch
-        GPIO.setup(18, GPIO.OUT)
-        self.pwm = GPIO.PWM(18, settings['frequency'])
+        GPIO.setup(self.door_channel, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Door Interlock
+        GPIO.setup(self.key_channel, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Key Switch
+        GPIO.setup(self.ttl_channel, GPIO.OUT)
+        self.pwm = GPIO.PWM(self.ttl_channel, settings['frequency'])
         logger.info('Laser Class initialised')
 
     def httpstatus(self):
@@ -49,23 +54,22 @@ class LaserClass:
 
     def setmaxtimeout(self, maxtime):
         """API call to set the maximum time that the laser can run"""
+        self.maxtime = maxtime
         settings['maxtime'] = maxtime
         logger.info('Changing Laser Maximum on time to %s seconds', maxtime)
         writesettings()
 
     def keyswitch(self):
         """Check if the key switch is on (N/C contact)"""
-        if GPIO.input(12) == 1:
+        if GPIO.input(self.key_channel) == 1:
             return 1
-        else:
-            return 0
+        return 0
 
     def doorinterlock(self):
         """Check if the door interlock is engaged (N/O contact)"""
-        if GPIO.input(16) == 0:
+        if GPIO.input(self.door_channel) == 0:
             return 1
-        else:
-            return 1
+        return 0
 
     def alarmstatus(self):
         """Check if the key and door interlock is engaged"""
@@ -154,8 +158,7 @@ class PyroClass:
                     else:
                         self.value = ((databack[0] * 256 + databack[1]) - 1000) / 10
                         logger.info('Pyrometer value = %s', self.value)
-                        if self.maxtemp < self.value:
-                            self.maxtemp = self.value
+                        self.maxtemp = max(self.maxtemp, self.value)
                         self.port.write(self.readlaser)
                         databack = self.port.read(size=100)
                         self.laser = databack[0]
