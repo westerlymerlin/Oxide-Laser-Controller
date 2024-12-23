@@ -18,10 +18,11 @@ class LaserClass:
         self.frequency = settings['frequency']
         self.dutycycle = settings['power']
         self.laserstate = 0
+        self.laserthread = 0
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(16, GPIO.IN)  # Door Interlock
-        GPIO.setup(12, GPIO.IN)  # Key Switch
+        GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Door Interlock
+        GPIO.setup(12, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Key Switch
         GPIO.setup(18, GPIO.OUT)
         self.pwm = GPIO.PWM(18, settings['frequency'])
         logger.info('Laser Class initialised')
@@ -65,7 +66,7 @@ class LaserClass:
         if GPIO.input(16) == 0:
             return 1
         else:
-            return 1
+            return 0
 
     def alarmstatus(self):
         """Check if the key and door interlock is engaged"""
