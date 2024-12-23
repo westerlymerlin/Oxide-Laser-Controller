@@ -34,7 +34,7 @@ def initialise():
                  'cameraWidth': 480,
                  'cameraBrightness': -5,
                  'cameraContrast': 32,
-                 'camaraSaturation': 64,
+                 'cameraSaturation': 64,
                  'cameraHue': -40,
                  'cameraGamma': 100,
                  'cameraGain': 0

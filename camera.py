@@ -31,7 +31,7 @@ class VideoCamera():
             self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, settings['cameraHeight'])
             self.video.set(cv2.CAP_PROP_BRIGHTNESS, settings['cameraBrightness'])
             self.video.set(cv2.CAP_PROP_CONTRAST, settings['cameraContrast'])
-            self.video.set(cv2.CAP_PROP_SATURATION, settings['camaraSaturation'])
+            self.video.set(cv2.CAP_PROP_SATURATION, settings['cameraSaturation'])
             self.video.set(cv2.CAP_PROP_HUE, settings['cameraHue'])
             self.video.set(cv2.CAP_PROP_GAMMA, settings['cameraGamma'])
             self.video.set(cv2.CAP_PROP_GAIN, settings['cameraGain'])
