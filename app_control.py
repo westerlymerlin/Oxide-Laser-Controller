@@ -29,7 +29,7 @@ def initialise():
                  'pyro-readlaser': 'JQ==',  # base64 encoded
                  'pyro-readtemp': 'AQ==',  # base64 encoded
                  'cameraID': 0,
-                 'cameraFPS': 30,
+                 'cameraFPS': 5,
                  'cameraHeight': 640,
                  'cameraWidth': 480,
                  'cameraBrightness': -5,
