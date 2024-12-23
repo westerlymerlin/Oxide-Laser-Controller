@@ -31,12 +31,21 @@ class VideoCamera():
             self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, settings['cameraHeight'])
             self.video.set(cv2.CAP_PROP_BRIGHTNESS, settings['cameraBrightness'])
             self.video.set(cv2.CAP_PROP_CONTRAST, settings['cameraContrast'])
+            self.video.set(cv2.CAP_PROP_SATURATION, settings['cameraSaturation'])
+            self.video.set(cv2.CAP_PROP_HUE, settings['cameraHue'])
+            self.video.set(cv2.CAP_PROP_GAMMA, settings['cameraGamma'])
+            self.video.set(cv2.CAP_PROP_GAIN, settings['cameraGain'])
             logger.info('Video FPS %s', self.video.get(cv2.CAP_PROP_FPS))
             logger.info('Video Width %s', self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
             logger.info('Video Height %s', self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
             logger.info('Video Backend %i', self.video.get(cv2.CAP_PROP_BACKEND))
             logger.info('Video Brightness %i', self.video.get(cv2.CAP_PROP_BRIGHTNESS))
             logger.info('Video Contrast %i', self.video.get(cv2.CAP_PROP_CONTRAST))
+            logger.info('Video Saturation %i', self.video.get(cv2.CAP_PROP_SATURATION))
+            logger.info('Video Hue %i', self.video.get(cv2.CAP_PROP_HUE))
+            logger.info('Video Gamma %i', self.video.get(cv2.CAP_PROP_GAMMA))
+            logger.info('Video Gain %i', self.video.get(cv2.CAP_PROP_GAIN))
+
 
     def __del__(self):
         """Releases resources when app is closed down"""

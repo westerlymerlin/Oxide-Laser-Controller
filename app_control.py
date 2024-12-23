@@ -28,12 +28,16 @@ def initialise():
                  'pyro-speed': 115200,
                  'pyro-readlaser': 'JQ==',  # base64 encoded
                  'pyro-readtemp': 'AQ==',  # base64 encoded
-                 'cameraBrightness': 10,
-                 'cameraContrast': 10,
-                 'cameraFPS': 30,
-                 'cameraHeight': 240,
                  'cameraID': 0,
-                 'cameraWidth': 320
+                 'cameraFPS': 30,
+                 'cameraHeight': 640,
+                 'cameraWidth': 480,
+                 'cameraBrightness': -5,
+                 'cameraContrast': 32,
+                 'camaraSaturation': 64,
+                 'cameraHue': -40,
+                 'cameraGamma': 100,
+                 'cameraGain': 0
                  }
     return isettings
 
