@@ -34,13 +34,13 @@ class LaserClass:
     def httpstatus(self):
         """Return the status (Firing), power and timeout values, is called via the web page"""
         if self.keyswitch():
-            keyswitch = 'off'
+            keyswitch = 'Key off'
         else:
-            keyswitch = 'on'
+            keyswitch = 'Key Enabled'
         if self.doorinterlock():
-            doorinterlock = 'open'
+            doorinterlock = 'Door Open'
         else:
-            doorinterlock = 'closed'
+            doorinterlock = 'Door Closed'
         httpreturn = [['Status', self.laserstate], ['Power (%)', settings['power']],
                       ['Auto off (s)', settings['maxtime']], ['Key Switch', keyswitch],
                       ['Door Interlock', doorinterlock]]
@@ -105,7 +105,6 @@ class LaserClass:
             logger.info('Laser is off')
             self.laserstate = 0
             self.pwm.stop()
-
 
 
 
@@ -232,7 +231,7 @@ def parsecontrol(item, command):
         if item == 'restart':
             if command == 'pi':
                 logger.warning('Restart command recieved: system will restart in 15 seconds')
-                timerthread = Timer(15, reboot())
+                timerthread = Timer(15, reboot)
                 timerthread.name = 'reboot-timer-thread'
                 timerthread.start()
                 return laser.laserstatus()
