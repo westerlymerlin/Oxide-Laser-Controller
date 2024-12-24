@@ -52,7 +52,7 @@ class VideoCamera():
         self.video.release()
 
     def get_frame(self):
-        """Get a stream of raw images and encode asjpg files"""
+        """Get a stream of raw images and encode as jpg files"""
         ret, frame = self.video.read()
         ret, jpeg = cv2.imencode('.jpg', frame)
         return jpeg.tobytes()
