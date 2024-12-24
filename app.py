@@ -11,6 +11,8 @@ from camera import VideoCamera
 
 logger.info('Starting Laser Controller web app version %s', VERSION)
 logger.info('Api-Key = %s', settings['api-key'])
+if settings['testmode']:
+    logger.warning('Test mode enabled')
 app = Flask(__name__)
 video_stream = VideoCamera()
 
@@ -42,7 +44,7 @@ def index():
     cputemperature = read_cpu_temperature()
     return render_template('index.html', laser=laser.httpstatus(), pyro=pyrometer.httpstatus(),
                            cputemperature=cputemperature, version=VERSION, appname=settings['app-name'],
-                           threads=threadlister())
+                           threads=threadlister(),  testmode=settings['testmode'])
 
 
 @app.route('/api', methods=['POST'])
