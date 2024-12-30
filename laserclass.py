@@ -10,6 +10,7 @@ import serial  # from pyserial
 from RPi import GPIO
 from app_control import settings, writesettings
 from logmanager import logger
+from camera import VideoCamera
 
 
 class LaserClass:
@@ -236,6 +237,8 @@ def parsecontrol(item, command):
                 timerthread.name = 'reboot-timer-thread'
                 timerthread.start()
                 return laser.laserstatus()
+        if item == 'camera':
+            return {'image': VideoCamera().get_image()}
         return laser.laserstatus()
     except ValueError:
         logger.warning('incorrect json message')
