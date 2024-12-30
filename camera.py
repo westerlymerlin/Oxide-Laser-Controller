@@ -11,7 +11,7 @@ from logmanager import logger
 from app_control import settings
 
 
-class VideoCamera():
+class VideoCamera:
     """
     Initializes the VideoCamera class.
 
@@ -53,12 +53,21 @@ class VideoCamera():
 
     def get_frame(self):
         """Get a stream of raw images and encode as jpg files"""
-        ret, frame = self.video.read()
-        ret, jpeg = cv2.imencode('.jpg', frame)
+        _ , frame = self.video.read()
+        _ , jpeg = cv2.imencode('.jpg', frame)
         return jpeg.tobytes()
 
     def get_image(self):
         """Get a single image"""
-        ret, frame = self.video.read()
-        ret, jpeg = cv2.imencode('.jpg', frame)
+        _ , frame = self.video.read()
+        _ , jpeg = cv2.imencode('.jpg', frame)
         return b64encode(jpeg.tobytes()).decode()
+
+    def mpeg_stream(self):
+        """Image processor, converts the stream of jpegs into an m-jpeg format for the browser"""
+        while True:
+            frame = self.get_frame()
+            yield b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n'
+
+
+video_stream = VideoCamera()
