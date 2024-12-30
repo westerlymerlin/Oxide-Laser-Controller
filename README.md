@@ -10,19 +10,21 @@ It uses CH-340 USB to RS232 adapters for comms.
 
 ----------------------------------------------------
 
-`laserclass.py`	  activates the laser vis a TTL line from GPIO using PWM for power modulation
+`laserclass.py`	  activates the laser via a TTL interface from GPIO using PWM for power modulation  
+`camera.py`    Manages video and image feed from USB webcam
 
 ### JSON Commands
-`{"laser": "off"}` Switch off the laser    
-`{"laser": "on"}` Switch on the laser    
+`{"laser": "off"}` Switch off the laser  
+`{"laser": "on"}` Switch on the laser  
 `{"setlaserpower": nn.n}` set the laser power to nn.n%  
 `{"laserstatus": 1}` Read the laser status (returns power and if the laser is firing)  
-`{"setlasertimeout": nnn}` change the default maximum time the laser can fire to nnn seconds (default is 300)
-
-`{'gettemperature', 1}` Return the pyrometer temperature and maximum attained temperature
-`{'resetmax', 1}` Reset the maximum pyrometer temperature reading
-`{'pyrolaser', 'off'}` Switch off the rangefinder laser    
-`{'pyrolaser', 'on'}` Switch on the rangefinder laser   
+`{"setlasertimeout": nnn}` change the default maximum time the laser can fire to nnn seconds (default is 300)  
+`{"camera": "read"}` Get a base64 encoded jpeg of the video camera  
+ 
+`{'gettemperature', 1}` Return the pyrometer temperature and maximum attained temperature  
+`{'resetmax', 1}` Reset the maximum pyrometer temperature reading   
+`{'pyrolaser', 'off'}` Switch off the rangefinder laser  
+`{'pyrolaser', 'on'}` Switch on the rangefinder laser  
 
 `{"restart": "pi"}` Restart the rsapberry pi after a 15 second delay
 
