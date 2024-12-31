@@ -58,9 +58,9 @@ class VideoCamera:
         return jpeg.tobytes()
 
     def get_image(self):
-        """Get a single image"""
+        """Get a single image and send as a base64 encoded png file"""
         _ , frame = self.video.read()
-        _ , jpeg = cv2.imencode('.jpg', frame)
+        _ , jpeg = cv2.imencode(settings['cameraImageFormat'], frame)
         return b64encode(jpeg.tobytes()).decode()
 
     def mpeg_stream(self):
