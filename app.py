@@ -9,7 +9,7 @@ from laserclass import pyrometer, parsecontrol, laser
 from app_control import settings, VERSION
 from camera import video_stream
 
-logger.info('Starting Laser Controller web app version %s', VERSION)
+logger.info('Starting %s web app version %s', settings['app-name'], VERSION)
 logger.info('Api-Key = %s', settings['api-key'])
 if settings['testmode']:
     logger.warning('Test mode enabled')

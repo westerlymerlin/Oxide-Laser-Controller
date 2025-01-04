@@ -27,7 +27,7 @@ else:
     logger.setLevel(logging.INFO)
 
 LogFile = RotatingFileHandler(settings['logfilepath'], maxBytes=1048576, backupCount=10)
-formatter = logging.Formatter('[%(levelname)s] [%(asctime)s] "%(message)s"')
+formatter = logging.Formatter('[%(asctime)s] - [%(levelname)s] - %(message)s')
 LogFile.setFormatter(formatter)
 logger.addHandler(LogFile)
 logger.info('Runnng Python %s on %s', sys.version, sys.platform)
