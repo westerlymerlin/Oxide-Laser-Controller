@@ -223,6 +223,14 @@ def parsecontrol(item, command):
         if item == 'setlaserpower':
             laser.setpower(command)
             return laser.laserstatus()
+        if item == 'gettemperature':
+            return pyrometer.temperature()
+        if item == 'pyrolaser':
+            if command == 'on':
+                pyrometer.laseron()
+            else:
+                pyrometer.laseroff()
+            return pyrometer.temperature()
         if item == 'laseralarm':
             return laser.alarmstatus()
         if item == 'laserstatus':
