@@ -181,7 +181,8 @@ class PyroClass:
             self.port.write(self.laser_on)
             databack = self.port.read(size=100)
             self.laser = 1
-            laserthread = Timer(60, self.laseroff)
+            laserthread = Timer(settings['maxtime'], self.laseroff)
+            laserthread.name = 'pyro-laser-off-thread'
             laserthread.start()
 
     def laseroff(self):
