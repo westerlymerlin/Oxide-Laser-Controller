@@ -158,7 +158,7 @@ class PyroClass:
                         self.laser = 0
                     else:
                         self.value = ((databack[0] * 256 + databack[1]) - 1000) / 10
-                        logger.info('Pyrometer value = %s', self.value)
+                        logger.debug('Pyrometer value = %s', self.value)
                         self.maxtemp = max(self.maxtemp, self.value)
                         self.port.write(self.readlaser)
                         databack = self.port.read(size=100)

@@ -6,7 +6,7 @@ import random
 import json
 from datetime import datetime
 
-VERSION = '1.1.11'
+VERSION = '1.1.12'
 
 def initialise():
     """Setup the settings structure with default values"""
@@ -32,11 +32,12 @@ def initialise():
                  'cameraFPS': 5,
                  'cameraHeight': 640,
                  'cameraWidth': 480,
-                 'cameraBrightness': -5,
-                 'cameraContrast': 32,
-                 'cameraSaturation': 64,
+                 'cameraBrightness': 128,
+                 'cameraContrast': 148,
+                 'cameraSaturation': 90,
                  'cameraHue': -40,
-                 'cameraGamma': 100,
+                 'cameraGamma': 4,
+                 'cameraSharpness': 15,
                  'cameraGain': 0,
                  'cameraImageFormat': '.png'
                  }
