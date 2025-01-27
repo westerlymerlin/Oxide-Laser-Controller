@@ -6,7 +6,7 @@ import random
 import json
 from datetime import datetime
 
-VERSION = '1.2.0'
+VERSION = '1.2.1'
 
 def initialise():
     """Setup the settings structure with default values"""
