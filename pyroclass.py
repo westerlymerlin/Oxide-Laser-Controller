@@ -68,7 +68,7 @@ class PyroClass:
                 else:
                     self.value = 0
             except:
-                logger.exception('Temperture Error: %s', Exception)
+                logger.exception('readtimer temperture Error: %s', Exception)
                 self.value = 0
                 self.port.close()
             sleep(5)
@@ -82,7 +82,7 @@ class PyroClass:
         if self.portready == 1:
             try:
                 self.port.open()
-            except serial.serialutil.SerialException:
+            except:
                 logger.error('PyroClass laseron: error opening port %s', self.port.port)
             self.port.write(self.laser_on)
             # databack = self.port.read(size=100)
@@ -98,7 +98,7 @@ class PyroClass:
         if self.portready == 1:
             try:
                 self.port.open()
-            except serial.serialutil.SerialException:
+            except:
                 logger.error('PyroClass laseroff: error opening port %s', self.port.port)
             self.port.write(self.laser_off)
             #  databack = self.port.read(size=100)
