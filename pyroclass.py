@@ -80,19 +80,26 @@ class PyroClass:
     def laseron(self):
         """Switch on the rangefinder laser and set a timer to swiotch it off 60 seconds later"""
         if self.portready == 1:
-            self.port.open()
+            try:
+                self.port.open()
+            except serial.serialutil.SerialException:
+                logger.error('PyroClass laseron: error opening port %s', self.port.port)
             self.port.write(self.laser_on)
             databack = self.port.read(size=100)
             self.laser = 1
+            self.port.close()
             laserthread = Timer(settings['maxtime'], self.laseroff)
             laserthread.name = 'pyro-laser-off-thread'
             laserthread.start()
-            self.port.close()
+
 
     def laseroff(self):
         """Switch off the rangefinder laser"""
         if self.portready == 1:
-            self.port.open()
+            try:
+                self.port.open()
+            except serial.serialutil.SerialException:
+                logger.error('PyroClass laseroff: error opening port %s', self.port.port)
             self.port.write(self.laser_off)
             databack = self.port.read(size=100)
             self.laser = 0
