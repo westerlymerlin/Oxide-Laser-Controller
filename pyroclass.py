@@ -1,4 +1,4 @@
-"""Pyro Class"""
+"""Pyro Class - controles the microepsilon pyrometer and rangefinder laser"""
 
 from threading import Timer
 from time import sleep
