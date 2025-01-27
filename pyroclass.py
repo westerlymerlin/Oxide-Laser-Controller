@@ -4,7 +4,7 @@ from threading import Timer
 from time import sleep
 from base64 import b64decode
 import serial  # from pyserial
-from app_control import settings, writesettings
+from app_control import settings
 from logmanager import logger
 
 
@@ -85,7 +85,7 @@ class PyroClass:
             except serial.serialutil.SerialException:
                 logger.error('PyroClass laseron: error opening port %s', self.port.port)
             self.port.write(self.laser_on)
-            databack = self.port.read(size=100)
+            # databack = self.port.read(size=100)
             self.laser = 1
             self.port.close()
             laserthread = Timer(settings['maxtime'], self.laseroff)
@@ -101,7 +101,7 @@ class PyroClass:
             except serial.serialutil.SerialException:
                 logger.error('PyroClass laseroff: error opening port %s', self.port.port)
             self.port.write(self.laser_off)
-            databack = self.port.read(size=100)
+            #  databack = self.port.read(size=100)
             self.laser = 0
             self.port.close()
 
@@ -125,5 +125,3 @@ class PyroClass:
 
 pyrometer = PyroClass(settings['pyro-port'], settings['pyro-speed'], settings['pyro-readtemp'],
                       settings['pyro-readlaser'], settings['pyro-laseron'], settings['pyro-laseroff'])
-
-
