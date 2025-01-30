@@ -1,7 +1,7 @@
 """Pyro Class - controles the microepsilon pyrometer and rangefinder laser"""
 
 from threading import Timer
-from time import sleep
+from time import sleep, time
 from base64 import b64decode
 import serial  # from pyserial
 from app_control import settings
@@ -76,11 +76,11 @@ class PyroClass:
         self.maxtemp = 0
 
     def laseron(self):
-        """Switch on the rangefinder laser and set a timer to swiotch it off 60 seconds later"""
+        """Switch on the rangefinder laser and set a timer to switch it off after maxtime"""
         if self.portready == 1:
             self.port.write(self.laser_on)
             self.laser = 1
-            laserthread = Timer(settings['maxtime'], self.laseroff)
+            laserthread = Timer(0.5, self.laserofftimer)
             laserthread.name = 'pyro-laser-off-thread'
             laserthread.start()
 
@@ -90,7 +90,17 @@ class PyroClass:
         if self.portready == 1:
             self.port.write(self.laser_off)
             self.laser = 0
-            self.port.close()
+
+    def laserofftimer(self):
+        """Auto switch off of the laser after maxtime seconds"""
+        offtime = time() + settings['maxtime']
+        print(time(), offtime)
+        while self.laser == 1:
+            if time() > offtime:
+                self.laseroff()
+            sleep(1)
+
+
 
     def readmax(self):
         """Return maximum temperature read"""
