@@ -4,15 +4,42 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="60" >
 <title>London Geochronology Centre - {{appname}}</title>
 <link href="{{ url_for('static',filename='css/text.css') }}" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <script>
+
+setInterval(getstatusdata, 1000);
+
+async function getstatusdata() {
+  const response = await fetch("/statusdata");
+  const statusdata = await response.json();
+  var idtoupdate = document.getElementById('123-cpu');
+  idtoupdate.innerHTML = statusdata.cputemperature;
+  var idtoupdate = document.getElementById('123-laser');
+  idtoupdate.innerHTML = statusdata.laser;
+  var idtoupdate = document.getElementById('123-power');
+  idtoupdate.innerHTML = statusdata.power;
+  var idtoupdate = document.getElementById('123-autooff');
+  idtoupdate.innerHTML = statusdata.autooff;
+  var idtoupdate = document.getElementById('123-door');
+  idtoupdate.innerHTML = statusdata.doorinterlock;
+  var idtoupdate = document.getElementById('123-keyswitch');
+  idtoupdate.innerHTML = statusdata.keyswitch;
+  var idtoupdate = document.getElementById('123-temp');
+  idtoupdate.innerHTML = statusdata.temperature;
+  var idtoupdate = document.getElementById('123-maxtemp');
+  idtoupdate.innerHTML = statusdata.maxtemp;
+  var idtoupdate = document.getElementById('123-pyrolaser');
+  idtoupdate.innerHTML = statusdata.pyrolaser;
+}
+
+</script>
 </head>
-<body>
+<body onload="getstatusdata()">
 	  <section class="banner">
 		  <div >
-              <P class="logo">London Geochronology Centre - {{appname}} - Server Status &nbsp CPU {{cputemperature}}&deg;C</P>
+              <P class="logo">London Geochronology Centre - {{appname}} - Server Status &nbsp CPU <strong id="123-cpu">awaiting-data</strong>&deg;C</P>
               <p class="breadcrumbtext"><a href = "/" class="breadcrumblink">Return to index</a> &nbsp|&nbsp
               <a href = "/pylog" class="breadcrumblink">Application Log</a> &nbsp|&nbsp
               <a href = "/guaccesslog" class="breadcrumblink">Website Access Log</a> &nbsp|&nbsp
@@ -28,18 +55,38 @@
             <td class="tabledataleft"><B>Description</B></td>
             <td class="tabledataleft"><B>Status</B></td>
          </thead>
-         {% for item in laser %}
             <tr>
-                    <td class="tabledataleft">Laser {{item[0]}}</td>
-                    <td class="tabledataleft">{{item[1]}}</td>
+                    <td class="tabledataleft">Laser Status</td>
+                    <td class="tabledataleft" id="123-laser">awaiting-data</td>
             </tr>
-         {% endfor %}
-         {% for item in pyro %}
+             <tr>
+                    <td class="tabledataleft">Laser Power (%)</td>
+                    <td class="tabledataleft" id="123-power">awaiting-data</td>
+            </tr>
             <tr>
-                    <td class="tabledataleft">Pyrometer {{item[0]}}</td>
-                    <td class="tabledataleft">{{item[1]}}</td>
+                    <td class="tabledataleft">Laser Timeout (s)</td>
+                    <td class="tabledataleft" id="123-autooff">awaiting-data</td>
             </tr>
-         {% endfor %}
+            <tr>
+                    <td class="tabledataleft">Laser Door Interlock</td>
+                    <td class="tabledataleft" id="123-door">awaiting-data</td>
+            </tr>
+            <tr>
+                    <td class="tabledataleft">Laser Key Switch</td>
+                    <td class="tabledataleft" id="123-keyswitch">awaiting-data</td>
+            </tr>
+            <tr>
+                    <td class="tabledataleft">Pyro Temperature (&deg;C)</td>
+                    <td class="tabledataleft" id="123-temp">awaiting-data</td>
+            </tr>
+            <tr>
+                    <td class="tabledataleft">Pyro Max Temperature (&deg;C)</td>
+                    <td class="tabledataleft" id="123-maxtemp">awaiting-data</td>
+            </tr>
+            <tr>
+                    <td class="tabledataleft">Pyro RangeFinedr Laser</td>
+                    <td class="tabledataleft" id="123-pyrolaser">awaiting-data</td>
+            </tr>
          {% for thread in threads %}
              <tr>
                     <td class="tabledataleft">Thread</td>

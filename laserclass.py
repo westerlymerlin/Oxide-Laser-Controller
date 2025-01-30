@@ -31,21 +31,6 @@ class LaserClass:
         self.pwm = GPIO.PWM(self.ttl_channel, settings['frequency'])
         logger.info('Laser Class initialised')
 
-    def httpstatus(self):
-        """Return the status (Firing), power and timeout values, is called via the web page"""
-        if self.keyswitch():
-            keyswitch = 'Key off'
-        else:
-            keyswitch = 'Key Enabled'
-        if self.doorinterlock():
-            doorinterlock = 'Door Open'
-        else:
-            doorinterlock = 'Door Closed'
-        httpreturn = [['Status', self.laserstate], ['Power (%)', settings['power']],
-                      ['Auto off (s)', settings['maxtime']], ['Key Switch', keyswitch],
-                      ['Door Interlock', doorinterlock]]
-        return httpreturn
-
     def setpower(self, laserpower):
         """Set the laser power via the serial connection"""
         self.dutycycle = laserpower
@@ -80,7 +65,7 @@ class LaserClass:
     def laserstatus(self):
         """Return the laser (firning) status and the power setting"""
         return {'laser': self.laserstate, 'power': settings['power'], 'keyswitch': self.keyswitch(),
-                'doorinterlock': self.doorinterlock()}
+                'doorinterlock': self.doorinterlock(), 'autooff': self.maxtime}
 
     def laser(self, state):
         """Switch on or off the laser, if laser is on then run a thread to switch off if max time is exceeded"""
