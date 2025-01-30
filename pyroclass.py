@@ -84,7 +84,6 @@ class PyroClass:
             laserthread.name = 'pyro-laser-off-thread'
             laserthread.start()
 
-
     def laseroff(self):
         """Switch off the rangefinder laser"""
         if self.portready == 1:
@@ -94,13 +93,10 @@ class PyroClass:
     def laserofftimer(self):
         """Auto switch off of the laser after maxtime seconds"""
         offtime = time() + settings['maxtime']
-        print(time(), offtime)
         while self.laser == 1:
             if time() > offtime:
                 self.laseroff()
             sleep(1)
-
-
 
     def readmax(self):
         """Return maximum temperature read"""
@@ -112,13 +108,8 @@ class PyroClass:
 
     def temperature(self):
         """API Call: return pyrometer values and settings as a json message"""
-        return {'temperature': self.read(), 'laser': self.laser, 'maxtemp': self.readmax()}
+        return {'temperature': self.read(), 'pyrolaser': self.laser, 'maxtemp': self.readmax()}
 
-    def httpstatus(self):
-        """Return the temperature, rangerfik=nder laser and max temp, is called via the web page"""
-        httpreturn = [['temperature', self.read()], ['rangerfinder laser', self.laser],
-                      ['max temperature', self.readmax()]]
-        return httpreturn
 
 pyrometer = PyroClass(settings['pyro-port'], settings['pyro-speed'], settings['pyro-readtemp'],
                       settings['pyro-readlaser'], settings['pyro-laseron'], settings['pyro-laseroff'])

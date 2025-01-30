@@ -41,9 +41,7 @@ def threadlister():
 @app.route('/')
 def index():
     """Main web status page"""
-    cputemperature = read_cpu_temperature()
-    return render_template('index.html', laser=laser.httpstatus(), pyro=pyrometer.httpstatus(),
-                           cputemperature=cputemperature, version=VERSION, appname=settings['app-name'],
+    return render_template('index.html', version=VERSION, appname=settings['app-name'],
                            threads=threadlister(),  testmode=settings['testmode'])
 
 
@@ -66,7 +64,12 @@ def api():
         logger.warning('API: Badly formed json message')
         return "badly formed json message", 401
 
-
+@app.route('/statusdata', methods=['GET'])
+def statusdata():
+    """Status data read by javascript on default website"""
+    ctrldata = laser.laserstatus() | pyrometer.temperature()
+    ctrldata['cputemperature'] = read_cpu_temperature()
+    return jsonify(ctrldata), 201
 
 @app.route('/video_feed')
 def video_feed():
