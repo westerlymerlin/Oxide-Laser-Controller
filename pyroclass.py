@@ -94,7 +94,6 @@ class PyroClass:
     def laserofftimer(self):
         """Auto switch off of the laser after maxtime seconds"""
         offtime = time() + settings['maxtime']
-        print(time(), offtime)
         while self.laser == 1:
             if time() > offtime:
                 self.laseroff()
