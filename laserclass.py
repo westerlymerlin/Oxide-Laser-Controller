@@ -3,6 +3,7 @@ Laser Class - manages the laser via  TTL signal and serial connections
 """
 # pylint: disable=E1101
 import os
+from time import sleep, time
 from threading import Timer
 from RPi import GPIO
 from app_control import settings, writesettings
@@ -91,22 +92,23 @@ class LaserClass:
             logger.info('Laser is on')
             self.pwm.start(self.dutycycle)
             self.laserstate = 1
-
             # Start a  timer for the laser, if the laser is not shutdown this timer will shut it down
-            if not settings['testmode']:
-                timerthread = Timer(settings['maxtime'], lambda: self.laser(2))
-                timerthread.name = 'laser-off-timer-thread'
-                timerthread.start()
-        elif state == 2:
-            logger.info('Laser Auto shut off')
-            self.pwm.stop()
-            self.laserstate = 0
+            timerthread = Timer(0.5,self.laserofftimer)
+            timerthread.name = 'laser-off-timer-thread'
+            timerthread.start()
         else:
             logger.info('Laser is off')
             self.laserstate = 0
             self.pwm.stop()
 
-
+    def laserofftimer(self):
+        """Auto switch off of the laser after maxtime seconds"""
+        offtime = time() + settings['maxtime']
+        print(time(), offtime)
+        while self.laserstate == 1:
+            if time() > offtime:
+                self.laser(0)
+            sleep(1)
 
 
 
