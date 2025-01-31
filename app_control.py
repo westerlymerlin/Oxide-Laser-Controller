@@ -6,7 +6,7 @@ import random
 import json
 from datetime import datetime
 
-VERSION = '1.3.0'
+VERSION = '1.3.2'
 
 def initialise():
     """Setup the settings structure with default values"""
@@ -28,6 +28,8 @@ def initialise():
                  'pyro-speed': 115200,
                  'pyro-readlaser': 'JQ==',  # base64 encoded
                  'pyro-readtemp': 'AQ==',  # base64 encoded
+                 'pyro-min-temp': 385,
+                 'pyro-running-average': 3,
                  'cameraID': 0,
                  'cameraFPS': 5,
                  'cameraHeight': 640,
@@ -42,6 +44,15 @@ def initialise():
                  'cameraImageFormat': '.png'
                  }
     return isettings
+
+
+def updatesetting(newsetting): # must be a dict object
+    """Update the settings with the new values"""
+    global settings
+    if isinstance(newsetting, dict):
+        for item in newsetting.keys():
+            settings[item] = newsetting[item]
+        writesettings()
 
 
 def generate_api_key(key_len):
