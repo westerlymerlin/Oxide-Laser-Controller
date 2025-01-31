@@ -15,7 +15,6 @@ from camera import video_stream
 class LaserClass:
     """LaserClass"""
     def __init__(self):
-        self.frequency = settings['frequency']
         self.dutycycle = settings['power']
         self.laserstate = 0
         self.laserthread = 0
@@ -76,6 +75,7 @@ class LaserClass:
                 return
             logger.info('Switching laser on')
             pyrometer.readinterval = 1
+            self.pwm.ChangeFrequency(settings['frequency'])
             self.pwm.start(self.dutycycle)
             self.laserstate = 1
             # Start a  timer for the laser, if the laser is not shutdown this timer will shut it down
