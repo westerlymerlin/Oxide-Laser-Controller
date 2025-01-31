@@ -6,7 +6,7 @@ import random
 import json
 from datetime import datetime
 
-VERSION = '1.3.0'
+VERSION = '1.3.1'
 
 def initialise():
     """Setup the settings structure with default values"""
@@ -42,6 +42,15 @@ def initialise():
                  'cameraImageFormat': '.png'
                  }
     return isettings
+
+
+def updatesetting(newsetting): # must be a dict object
+    """Update the settings with the new values"""
+    global settings
+    if isinstance(newsetting, dict):
+        for item in newsetting.keys():
+            settings[item] = newsetting[item]
+        writesettings()
 
 
 def generate_api_key(key_len):

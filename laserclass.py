@@ -6,7 +6,7 @@ import os
 from time import sleep, time
 from threading import Timer
 from RPi import GPIO
-from app_control import settings, writesettings
+from app_control import settings, writesettings, updatesetting
 from pyroclass import pyrometer
 from logmanager import logger
 from camera import video_stream
@@ -134,6 +134,10 @@ def parsecontrol(item, command):
                 return laser.laserstatus()
         if item == 'camera':
             return {'image': video_stream.get_image()}
+        if item == 'setting':
+            logger.warning('Setting changed via api - %s', command)
+            updatesetting(command)
+            return settings
         return laser.laserstatus()
     except ValueError:
         logger.warning('incorrect json message')
