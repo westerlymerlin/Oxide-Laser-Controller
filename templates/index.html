@@ -20,6 +20,8 @@ async function getstatusdata() {
   idtoupdate.innerHTML = statusdata.laser;
   var idtoupdate = document.getElementById('123-power');
   idtoupdate.innerHTML = statusdata.power;
+  var idtoupdate = document.getElementById('123-frequency');
+  idtoupdate.innerHTML = statusdata.laserfrequency;
   var idtoupdate = document.getElementById('123-autooff');
   idtoupdate.innerHTML = statusdata.autooff;
   var idtoupdate = document.getElementById('123-door');
@@ -65,7 +67,11 @@ async function getstatusdata() {
                     <td class="tabledataleft">Laser Power (%)</td>
                     <td class="tabledataleft" id="123-power">awaiting-data</td>
             </tr>
-            <tr>
+             <tr>
+                    <td class="tabledataleft">Laser PWM Frequency (Hz)</td>
+                    <td class="tabledataleft" id="123-frequency">awaiting-data</td>
+            </tr>
+           <tr>
                     <td class="tabledataleft">Laser Timeout (s)</td>
                     <td class="tabledataleft" id="123-autooff">awaiting-data</td>
             </tr>
@@ -90,7 +96,7 @@ async function getstatusdata() {
                     <td class="tabledataleft" id="123-maxtemp">awaiting-data</td>
             </tr>
             <tr>
-                    <td class="tabledataleft">Pyro RangeFinedr Laser</td>
+                    <td class="tabledataleft">Pyro Range Laser</td>
                     <td class="tabledataleft" id="123-pyrolaser">awaiting-data</td>
             </tr>
          {% for thread in threads %}
