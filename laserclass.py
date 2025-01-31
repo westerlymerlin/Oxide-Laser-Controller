@@ -74,14 +74,16 @@ class LaserClass:
                 logger.warning('Laser was not switched on, key switch or door interlock was engaged')
                 self.laserstate = 0
                 return
-            logger.info('Laser is on')
+            logger.info('Switching laser on')
+            pyrometer.readinterval = 1
             self.pwm.start(self.dutycycle)
             self.laserstate = 1
             # Start a  timer for the laser, if the laser is not shutdown this timer will shut it down
-            timerthread = Timer(0.5,self.laserofftimer)
+            timerthread = Timer(0.5, self.laserofftimer)
             timerthread.name = 'laser-off-timer-thread'
             timerthread.start()
         else:
+            pyrometer.readinterval = 5
             logger.info('Laser is off')
             self.laserstate = 0
             self.pwm.stop()

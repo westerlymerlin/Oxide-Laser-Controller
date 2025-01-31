@@ -23,6 +23,8 @@ class PyroClass:
         self.laser = 0
         self.maxtemp = 0
         self.portready = 0
+        self.readinterval = 5
+        self.tempseq = [settings['pyro-min-temp']] * settings['pyro-running-average']
         self.readtemp = b64decode(readtemp)
         self.readlaser = b64decode(readlaser)
         self.laser_on = b64decode(laseron)
@@ -60,6 +62,7 @@ class PyroClass:
                         if self.value > self.maxtemp:
                             self.maxtemp = self.value
                             logger.info('Pyro readtimer: New Max Temp = %s', self.maxtemp)
+                        self.setaverage()
                         self.port.write(self.readlaser)
                         databack = self.port.read(size=100)
                         self.laser = databack[0]
@@ -69,7 +72,19 @@ class PyroClass:
             except:
                 logger.exception('readtimer temperture Error: %s', Exception)
                 self.value = 0
-            sleep(5)
+            sleep(self.readinterval)
+
+    def setaverage(self):
+        """Add the temp value to the running average list"""
+        if self.value < settings['pyro-min-temp']:
+            self.tempseq = [settings['pyro-min-temp']] * settings['pyro-running-average']
+        else:
+            self.tempseq.append(self.value)
+            self.tempseq.pop(0)
+
+    def getaverage(self):
+        """return the average of the last readings"""
+        return int(sum(self.tempseq) / len(self.tempseq))
 
     def resetmax(self):
         """Reset the maximum temerature"""
@@ -108,7 +123,8 @@ class PyroClass:
 
     def temperature(self):
         """API Call: return pyrometer values and settings as a json message"""
-        return {'temperature': self.read(), 'pyrolaser': self.laser, 'maxtemp': self.readmax()}
+        return {'temperature': self.read(), 'averagetemp': self.getaverage(), 'pyrolaser': self.laser,
+                'maxtemp': self.readmax()}
 
 
 pyrometer = PyroClass(settings['pyro-port'], settings['pyro-speed'], settings['pyro-readtemp'],

@@ -28,6 +28,8 @@ async function getstatusdata() {
   idtoupdate.innerHTML = statusdata.keyswitch;
   var idtoupdate = document.getElementById('123-temp');
   idtoupdate.innerHTML = statusdata.temperature;
+  var idtoupdate = document.getElementById('123-average-temp');
+  idtoupdate.innerHTML = statusdata.averagetemp;
   var idtoupdate = document.getElementById('123-maxtemp');
   idtoupdate.innerHTML = statusdata.maxtemp;
   var idtoupdate = document.getElementById('123-pyrolaser');
@@ -76,8 +78,12 @@ async function getstatusdata() {
                     <td class="tabledataleft" id="123-keyswitch">awaiting-data</td>
             </tr>
             <tr>
-                    <td class="tabledataleft">Pyro Temperature (&deg;C)</td>
+                    <td class="tabledataleft">Pyro Current Temperature (&deg;C)</td>
                     <td class="tabledataleft" id="123-temp">awaiting-data</td>
+            </tr>
+            <tr>
+                    <td class="tabledataleft">Pyro Average Temperature (&deg;C)</td>
+                    <td class="tabledataleft" id="123-average-temp">awaiting-data</td>
             </tr>
             <tr>
                     <td class="tabledataleft">Pyro Max Temperature (&deg;C)</td>
