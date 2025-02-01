@@ -28,7 +28,7 @@ class LaserClass:
         GPIO.setup(self.key_channel, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Key Switch
         GPIO.setup(self.ttl_channel, GPIO.OUT)
         self.pwm = GPIO.PWM(self.ttl_channel, settings['frequency'])
-        logger.info('Laser Class initialised')
+        logger.info('LaserClass initialised')
 
     def setpower(self, laserpower):
         """Set the laser power via the serial connection"""
@@ -40,7 +40,7 @@ class LaserClass:
         """API call to set the maximum time that the laser can run"""
         self.maxtime = maxtime
         settings['maxtime'] = maxtime
-        logger.info('Changing Laser Maximum on time to %s seconds', maxtime)
+        logger.info('LaserClass Changing Laser Maximum on time to %s seconds', maxtime)
         writesettings()
 
     def keyswitch(self):
@@ -70,7 +70,7 @@ class LaserClass:
         """Switch on or off the laser, if laser is on then run a thread to switch off if max time is exceeded"""
         if state == 1:
             if self.alarmstatus() > 0:
-                logger.warning('Laser was not switched on, key switch or door interlock was engaged')
+                logger.warning('LaserClass Laser was not switched on, key switch or door interlock was engaged')
                 self.laserstate = 0
                 return
             logger.info('Switching laser on')
@@ -114,6 +114,8 @@ def parsecontrol(item, command):
             return laser.laserstatus()
         if item == 'gettemperature':
             return pyrometer.temperature()
+        if item == 'resetmax':
+            return pyrometer.resetmax()
         if item == 'pyrolaser':
             if command == 'on':
                 pyrometer.laseron()
@@ -129,7 +131,7 @@ def parsecontrol(item, command):
             return {'maxtime': settings['maxtime']}
         if item == 'restart':
             if command == 'pi':
-                logger.warning('Restart command recieved: system will restart in 15 seconds')
+                logger.warning('parsecontrol Restart command recieved: system will restart in 15 seconds')
                 timerthread = Timer(15, reboot)
                 timerthread.name = 'reboot-timer-thread'
                 timerthread.start()
@@ -137,21 +139,18 @@ def parsecontrol(item, command):
         if item == 'camera':
             return {'image': video_stream.get_image()}
         if item == 'setting':
-            logger.warning('Setting changed via api - %s', command)
+            logger.warning('parsecontrol Setting changed via api - %s', command)
             updatesetting(command)
             return settings
         return laser.laserstatus()
     except ValueError:
-        logger.warning('incorrect json message')
+        logger.warning('parsecontrol incorrect json message')
         return laser.laserstatus()
 
 
 def reboot():
     """API call to reboot the Raspberry Pi"""
-    logger.warning('System is restarting now')
+    logger.warning('parsecontrol System is restarting now')
     os.system('sudo reboot')
 
-logger.info("laser controller started")
-
 laser = LaserClass()
-logger.info("Laser controller ready")
