@@ -73,7 +73,7 @@ class LaserClass:
                 logger.warning('LaserClass Laser was not switched on, key switch or door interlock was engaged')
                 self.laserstate = 0
                 return
-            logger.info('Switching laser on')
+            logger.info('LaserClass Switching laser on')
             pyrometer.readinterval = 1
             self.pwm.ChangeFrequency(settings['frequency'])
             self.pwm.start(self.dutycycle)
@@ -84,7 +84,7 @@ class LaserClass:
             timerthread.start()
         else:
             pyrometer.readinterval = 5
-            logger.info('Laser is off')
+            logger.info('LaserClass Laser is off')
             self.laserstate = 0
             self.pwm.stop()
 
