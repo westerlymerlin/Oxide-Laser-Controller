@@ -78,6 +78,8 @@ class PyroClass:
         """Add the temp value to the running average list"""
         if self.value <= settings['pyro-min-temp']:
             self.tempseq = [settings['pyro-min-temp']] * settings['pyro-running-average']
+        elif self.value > (self.averagetemp + 20):  # speed up getitng to average while sample is heating
+            self.tempseq = [self.value] * settings['pyro-running-average']
         else:
             self.tempseq.append(self.value)
             self.tempseq.pop(0)
