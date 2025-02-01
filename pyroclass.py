@@ -29,10 +29,10 @@ class PyroClass:
         self.readlaser = b64decode(readlaser)
         self.laser_on = b64decode(laseron)
         self.laser_off = b64decode(laseroff)
-        logger.info('Initialising pyrometer on port %s', self.port.port)
+        logger.info('PyroClass Initialising pyrometer on port %s', self.port.port)
         try:
             self.port.open()
-            logger.info('pyrometer port %s ok', self.port.port)
+            logger.info('PyroClass pyrometer port %s ok', self.port.port)
             self.portready = 1
             timerthread = Timer(1, self.readtimer)
             timerthread.name = 'pyro-read-thread'
@@ -43,7 +43,7 @@ class PyroClass:
     def close(self):
         """Close the serial port"""
         self.port.close()
-        logger.info('Pyrometer port %s closed', self.port.port)
+        logger.info('PyroClass Pyrometer port %s closed', self.port.port)
         self.portready = 0
 
     def readtimer(self):
@@ -58,19 +58,19 @@ class PyroClass:
                         self.laser = 0
                     else:
                         self.value = ((databack[0] * 256 + databack[1]) - 1000) / 10
-                        logger.debug('Pyrometer value = %s', self.value)
+                        logger.debug('PyroClass Pyrometer value = %s', self.value)
                         if self.value > self.maxtemp:
                             self.maxtemp = self.value
-                            logger.info('Pyro readtimer: New Max Temp = %s', self.maxtemp)
+                            logger.info('PyroClass Pyro readtimer: New Max Temp = %s', self.maxtemp)
                         self.setaverage()
                         self.port.write(self.readlaser)
                         databack = self.port.read(size=100)
                         self.laser = databack[0]
-                    logger.debug('Temp Return "%s" ', self.value)
+                    logger.debug('PyroClass Temp Return "%s" ', self.value)
                 else:
                     self.value = 0
             except:
-                logger.exception('readtimer temperture Error: %s', Exception)
+                logger.exception('PyroClass readtimer temperture Error: %s', Exception)
                 self.value = 0
             sleep(self.readinterval)
 
@@ -88,7 +88,9 @@ class PyroClass:
 
     def resetmax(self):
         """Reset the maximum temerature"""
-        self.maxtemp = 0
+        logger.info('PyroClass max temp reset')
+        self.maxtemp = settings['pyro-min-temp']
+        return self.temperature()
 
     def laseron(self):
         """Switch on the rangefinder laser and set a timer to switch it off after maxtime"""
