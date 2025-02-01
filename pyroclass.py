@@ -19,9 +19,11 @@ class PyroClass:
         self.port.bytesize = serial.EIGHTBITS
         # self.port.set_buffer_size(4096, 4096)
         self.port.timeout = 1
-        self.value = 0
+        self.value = settings['pyro-min-temp']
+        self.averagetemp = settings['pyro-min-temp']
+        self.maxtemp = settings['pyro-min-temp']
+        self.averagemaxtemp = settings['pyro-min-temp']
         self.laser = 0
-        self.maxtemp = 0
         self.portready = 0
         self.readinterval = 5
         self.tempseq = [settings['pyro-min-temp']] * settings['pyro-running-average']
@@ -59,9 +61,7 @@ class PyroClass:
                     else:
                         self.value = ((databack[0] * 256 + databack[1]) - 1000) / 10
                         logger.debug('PyroClass Pyrometer value = %s', self.value)
-                        if self.value > self.maxtemp:
-                            self.maxtemp = self.value
-                            logger.info('PyroClass Pyro readtimer: New Max Temp = %s', self.maxtemp)
+                        self.maxtemp = max(self.value, self.maxtemp)
                         self.setaverage()
                         self.port.write(self.readlaser)
                         databack = self.port.read(size=100)
@@ -76,20 +76,19 @@ class PyroClass:
 
     def setaverage(self):
         """Add the temp value to the running average list"""
-        if self.value < settings['pyro-min-temp']:
+        if self.value <= settings['pyro-min-temp']:
             self.tempseq = [settings['pyro-min-temp']] * settings['pyro-running-average']
         else:
             self.tempseq.append(self.value)
             self.tempseq.pop(0)
-
-    def getaverage(self):
-        """return the average of the last readings"""
-        return int(sum(self.tempseq) / len(self.tempseq))
+        self.averagetemp = int(sum(self.tempseq) / len(self.tempseq))
+        self.averagemaxtemp = max(self.averagetemp, self.averagemaxtemp)
 
     def resetmax(self):
         """Reset the maximum temerature"""
         logger.info('PyroClass max temp reset')
         self.maxtemp = settings['pyro-min-temp']
+        self.averagemaxtemp = settings['pyro-min-temp']
         return self.temperature()
 
     def laseron(self):
@@ -115,18 +114,10 @@ class PyroClass:
                 self.laseroff()
             sleep(1)
 
-    def readmax(self):
-        """Return maximum temperature read"""
-        return self.maxtemp
-
-    def read(self):
-        """Return last temperature read"""
-        return self.value
-
     def temperature(self):
         """API Call: return pyrometer values and settings as a json message"""
-        return {'temperature': self.read(), 'averagetemp': self.getaverage(), 'pyrolaser': self.laser,
-                'maxtemp': self.readmax()}
+        return {'temperature': self.value, 'averagetemp': self.averagetemp, 'pyrolaser': self.laser,
+                'maxtemp': self.maxtemp, 'averagemaxtemp': self.averagemaxtemp}
 
 
 pyrometer = PyroClass(settings['pyro-port'], settings['pyro-speed'], settings['pyro-readtemp'],
