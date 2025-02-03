@@ -6,7 +6,7 @@ import random
 import json
 from datetime import datetime
 
-VERSION = '1.3.6'
+VERSION = '1.4.0'
 
 def initialise():
     """Setup the settings structure with default values"""
@@ -30,17 +30,31 @@ def initialise():
                  'pyro-readtemp': 'AQ==',  # base64 encoded
                  'pyro-min-temp': 385,
                  'pyro-running-average': 3,
-                 'cameraID': 0,
-                 'cameraFPS': 5,
-                 'cameraHeight': 640,
-                 'cameraWidth': 480,
-                 'cameraBrightness': 128,
-                 'cameraContrast': 148,
-                 'cameraSaturation': 90,
-                 'cameraHue': -40,
-                 'cameraGamma': 4,
-                 'cameraSharpness': 15,
-                 'cameraGain': 0,
+                 'camera-qty': 2,
+                 'camera0': {
+                     'cameraID': 0,
+                     'cameraFPS': 5,
+                     'cameraHeight': 640,
+                     'cameraWidth': 480,
+                     'cameraBrightness': 128,
+                     'cameraContrast': 148,
+                     'cameraSaturation': 90,
+                     'cameraHue': -40,
+                     'cameraGamma': 4,
+                     'cameraSharpness': 15,
+                     'cameraGain': 0},
+                 'camera1': {
+                     'cameraID': 2,
+                     'cameraFPS': 5,
+                     'cameraHeight': 640,
+                     'cameraWidth': 480,
+                     'cameraBrightness': 64,
+                     'cameraContrast': 32,
+                     'cameraSaturation': 64,
+                     'cameraHue': 0,
+                     'cameraGamma': 100,
+                     'cameraSharpness': 0,
+                     'cameraGain': 50},
                  'cameraImageFormat': '.png'
                  }
     return isettings

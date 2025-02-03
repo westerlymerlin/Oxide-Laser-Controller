@@ -9,7 +9,7 @@ from RPi import GPIO
 from app_control import settings, writesettings, updatesetting
 from pyroclass import pyrometer
 from logmanager import logger
-from camera import video_stream
+from camera import video_camera_instance_0
 
 
 class LaserClass:
@@ -137,7 +137,7 @@ def parsecontrol(item, command):
                 timerthread.start()
                 return laser.laserstatus()
         if item == 'camera':
-            return {'image': video_stream.get_image()}
+            return {'image': video_camera_instance_0.get_image()}
         if item == 'setting':
             logger.warning('parsecontrol Setting changed via api - %s', command)
             updatesetting(command)
