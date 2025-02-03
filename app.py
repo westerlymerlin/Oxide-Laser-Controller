@@ -7,7 +7,7 @@ from flask import Flask, render_template, jsonify, request, Response
 from logmanager import  logger
 from laserclass import pyrometer, parsecontrol, laser
 from app_control import settings, VERSION
-from camera import video_stream
+from camera import video_camera_instance_0, video_camera_instance_1
 
 logger.info('Starting %s web app version %s', settings['app-name'], VERSION)
 logger.info('Api-Key = %s', settings['api-key'])
@@ -72,10 +72,16 @@ def statusdata():
     ctrldata['cputemperature'] = read_cpu_temperature()
     return jsonify(ctrldata), 201
 
-@app.route('/video_feed')
-def video_feed():
+@app.route('/VideoFeed0')
+def video_feed0():
     """The image feed read by the browser"""
-    return Response(video_stream.mpeg_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(video_camera_instance_0.mpeg_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/VideoFeed1')
+def video_feed1():
+    """The image feed read by the browser"""
+    return Response(video_camera_instance_1.mpeg_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 @app.route('/pylog')
 def showplogs():

@@ -20,33 +20,33 @@ class VideoCamera:
     error message is logged.
 
     """
-    def __init__(self):
-        self.video = cv2.VideoCapture(settings['cameraID'])
+    def __init__(self, camera_index, camerasettings):
+        self.video = cv2.VideoCapture(camerasettings['cameraID'])
         if not self.video.isOpened():
-            logger.error('VideoCameraClass: No video camera found')
+            logger.error('VideoCameraClass: No video camera found instance=%s', camera_index)
         else:
-            logger.info('VideoCameraClass: Starting video camera')
-            self.video.set(cv2.CAP_PROP_FPS, settings['cameraFPS'])
-            self.video.set(cv2.CAP_PROP_FRAME_WIDTH, settings['cameraWidth'])
-            self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, settings['cameraHeight'])
-            self.video.set(cv2.CAP_PROP_BRIGHTNESS, settings['cameraBrightness'])
-            self.video.set(cv2.CAP_PROP_CONTRAST, settings['cameraContrast'])
-            self.video.set(cv2.CAP_PROP_SATURATION, settings['cameraSaturation'])
-            self.video.set(cv2.CAP_PROP_HUE, settings['cameraHue'])
-            self.video.set(cv2.CAP_PROP_GAMMA, settings['cameraGamma'])
-            self.video.set(cv2.CAP_PROP_GAIN, settings['cameraGain'])
-            self.video.set(cv2.CAP_PROP_SHARPNESS, settings['cameraSharpness'])
-            logger.info('Video FPS %s', self.video.get(cv2.CAP_PROP_FPS))
-            logger.info('Video Width %s', self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
-            logger.info('Video Height %s', self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
-            logger.info('Video Backend %i', self.video.get(cv2.CAP_PROP_BACKEND))
-            logger.info('Video Brightness %i', self.video.get(cv2.CAP_PROP_BRIGHTNESS))
-            logger.info('Video Contrast %i', self.video.get(cv2.CAP_PROP_CONTRAST))
-            logger.info('Video Saturation %i', self.video.get(cv2.CAP_PROP_SATURATION))
-            logger.info('Video Sharpness %i', self.video.get(cv2.CAP_PROP_SHARPNESS))
-            logger.info('Video Hue %i', self.video.get(cv2.CAP_PROP_HUE))
-            logger.info('Video Gamma %i', self.video.get(cv2.CAP_PROP_GAMMA))
-            logger.info('Video Gain %i', self.video.get(cv2.CAP_PROP_GAIN))
+            logger.info('VideoCameraClass: Starting video camera %s as video_camera_instance_%s', camerasettings['cameraID'], camera_index)
+            self.video.set(cv2.CAP_PROP_FPS, camerasettings['cameraFPS'])
+            self.video.set(cv2.CAP_PROP_FRAME_WIDTH, camerasettings['cameraWidth'])
+            self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, camerasettings['cameraHeight'])
+            self.video.set(cv2.CAP_PROP_BRIGHTNESS, camerasettings['cameraBrightness'])
+            self.video.set(cv2.CAP_PROP_CONTRAST, camerasettings['cameraContrast'])
+            self.video.set(cv2.CAP_PROP_SATURATION, camerasettings['cameraSaturation'])
+            self.video.set(cv2.CAP_PROP_HUE, camerasettings['cameraHue'])
+            self.video.set(cv2.CAP_PROP_GAMMA, camerasettings['cameraGamma'])
+            self.video.set(cv2.CAP_PROP_GAIN, camerasettings['cameraGain'])
+            self.video.set(cv2.CAP_PROP_SHARPNESS, camerasettings['cameraSharpness'])
+            logger.info('camera%s Video FPS %s', camera_index, self.video.get(cv2.CAP_PROP_FPS))
+            logger.info('camera%s Video Width %s', camera_index, self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
+            logger.info('camera%s Video Height %s', camera_index, self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            logger.info('camera%s Video Backend %i', camera_index, self.video.get(cv2.CAP_PROP_BACKEND))
+            logger.info('camera%s Video Brightness %i', camera_index, self.video.get(cv2.CAP_PROP_BRIGHTNESS))
+            logger.info('camera%s Video Contrast %i', camera_index, self.video.get(cv2.CAP_PROP_CONTRAST))
+            logger.info('camera%s Video Saturation %i', camera_index, self.video.get(cv2.CAP_PROP_SATURATION))
+            logger.info('camera%s Video Sharpness %i', camera_index, self.video.get(cv2.CAP_PROP_SHARPNESS))
+            logger.info('camera%s Video Hue %i', camera_index, self.video.get(cv2.CAP_PROP_HUE))
+            logger.info('camera%s Video Gamma %i', camera_index, self.video.get(cv2.CAP_PROP_GAMMA))
+            logger.info('camera%s Video Gain %i', camera_index, self.video.get(cv2.CAP_PROP_GAIN))
 
 
     def __del__(self):
@@ -72,4 +72,5 @@ class VideoCamera:
             yield b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n'
 
 
-video_stream = VideoCamera()
+video_camera_instance_0 = VideoCamera(0, settings['camera0'])
+video_camera_instance_1 = VideoCamera(1, settings['camera1'])
