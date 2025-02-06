@@ -19,7 +19,7 @@ It uses CH-340 USB to RS232 adapters for comms.
 `{"setlaserpower": nn.n}` set the laser power to nn.n%  
 `{"laserstatus": 1}` Read the laser status (returns power and if the laser is firing)  
 `{"setlasertimeout": nnn}` change the default maximum time the laser can fire to nnn seconds (default is 300)  
-`{"camera": "read"}` Get a base64 encoded jpeg of the video camera  
+
  
 `{'gettemperature', 1}` Return the pyrometer temperature and maximum attained temperature  
 `{'resetmax', 1}` Reset the maximum pyrometer temperature reading   
