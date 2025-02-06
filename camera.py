@@ -5,7 +5,6 @@ cv2 library from opencv-python-headless
 Author: Gary Twinn
 """
 
-from base64 import b64encode
 import cv2
 from logmanager import logger
 from app_control import settings
@@ -58,12 +57,6 @@ class VideoCamera:
         _ , frame = self.video.read()
         _ , jpeg = cv2.imencode('.jpg', frame)
         return jpeg.tobytes()
-
-    def get_image(self):
-        """Get a single image and send as a base64 encoded png file"""
-        _ , frame = self.video.read()
-        _ , jpeg = cv2.imencode(settings['cameraImageFormat'], frame)
-        return b64encode(jpeg.tobytes()).decode()
 
     def mpeg_stream(self):
         """Image processor, converts the stream of jpegs into an m-jpeg format for the browser"""
