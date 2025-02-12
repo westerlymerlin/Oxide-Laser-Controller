@@ -6,7 +6,7 @@ import os
 from time import sleep, time
 from threading import Timer
 from RPi import GPIO
-from app_control import settings, writesettings, updatesetting
+from app_control import settings, writesettings
 from pyroclass import pyrometer
 from logmanager import logger
 
@@ -96,6 +96,13 @@ class LaserClass:
             sleep(1)
 
 
+def updatesetting(newsetting): # must be a dict object
+    """Update the settings with the new values"""
+    global settings
+    if isinstance(newsetting, dict):
+        for item in newsetting.keys():
+            settings[item] = newsetting[item]
+        writesettings()
 
 
 def parsecontrol(item, command):
@@ -135,9 +142,11 @@ def parsecontrol(item, command):
                 timerthread.name = 'reboot-timer-thread'
                 timerthread.start()
                 return laser.laserstatus()
-        if item == 'setting':
+        if item == 'updatesetting':
             logger.warning('parsecontrol Setting changed via api - %s', command)
             updatesetting(command)
+            return settings
+        if item == 'getsettings':
             return settings
         return laser.laserstatus()
     except ValueError:
