@@ -59,14 +59,6 @@ def initialise():
     return isettings
 
 
-def updatesetting(newsetting): # must be a dict object
-    """Update the settings with the new values"""
-    global settings
-    if isinstance(newsetting, dict):
-        for item in newsetting.keys():
-            settings[item] = newsetting[item]
-        writesettings()
-
 
 def generate_api_key(key_len):
     """generate a new api key"""
