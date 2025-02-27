@@ -49,12 +49,12 @@ class LaserClass:
     def interlockmonitor(self):
         """Monitor the door interlock and switch off the laser if the door is open"""
         while True:
-            if self.doorstate != GPIO.input(self.door_channel):
-                self.doorstate = GPIO.input(self.door_channel)
+            if self.doorstate == GPIO.input(self.door_channel):
+                self.doorstate = not GPIO.input(self.door_channel)
                 GPIO.output(self.door_led_channel, self.doorstate)
                 logger.info('LaserClass Door Interlock State = %s', self.doorstate)
-            if self.keystate == GPIO.input(self.key_channel):
-                self.keystate = not GPIO.input(self.key_channel)
+            if self.keystate != GPIO.input(self.key_channel):
+                self.keystate = GPIO.input(self.key_channel)
                 logger.info('LaserClass Key Switch State = %s', self.keystate)
             if self.doorstate + self.keystate == 2:
                 if self.laserenabled == 0:
