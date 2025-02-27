@@ -67,7 +67,7 @@ def api():
 @app.route('/statusdata', methods=['GET'])
 def statusdata():
     """Status data read by javascript on default website"""
-    ctrldata = laser.laserstatus() | pyrometer.temperature()
+    ctrldata = laser.laserhttpsstatus() | pyrometer.temperature()
     ctrldata['laserfrequency'] = settings['frequency']
     ctrldata['cputemperature'] = read_cpu_temperature()
     return jsonify(ctrldata), 201
