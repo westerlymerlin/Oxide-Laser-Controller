@@ -21,7 +21,6 @@ def initialise():
                  'frequency': 1000,
                  'power': 25,
                  'maxtime': 500,
-                 'testmode': False,
                  'pyro-laseroff': 'pQCl',  # base64 encoded
                  'pyro-laseron': 'pQGk',  # base64 encoded
                  'pyro-port': '/dev/ttyUSB0',
