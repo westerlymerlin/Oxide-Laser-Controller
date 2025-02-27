@@ -63,6 +63,7 @@ class LaserClass:
                     GPIO.output(self.enable_channel, 1)
             else:
                 if self.laserenabled == 1:
+                    self.laserenabled = 0
                     logger.info('LaserClass Laser is disabled')
                     GPIO.output(self.enable_channel, 0)
             sleep(0.5)
