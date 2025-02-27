@@ -16,7 +16,7 @@ class LaserClass:
     def __init__(self):
         self.dutycycle = settings['power']
         self.laserstate = 0
-        self.laserthread = 0
+        # self.laserthread = 0
         self.maxtime = settings['maxtime']
         self.key_channel = 12
         self.door_channel = 16
@@ -24,6 +24,9 @@ class LaserClass:
         self.enable_channel = 21
         self.ttl_channel = 18
         self.laser_led_channel = 25
+        self.doorstate = 0
+        self.keystate = 0
+        self.laserenabled = 0
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.door_channel, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Door Interlock Reader
@@ -38,7 +41,31 @@ class LaserClass:
         GPIO.setup(self.laser_led_channel, GPIO.OUT)  # Laser LED
         self.laserled_pwm = GPIO.PWM(self.laser_led_channel, 2)
         GPIO.output(self.laser_led_channel, 0)
+        timerthread = Timer(0.5, self.interlockmonitor)
+        timerthread.name = 'laser-interlock-monitor-thread'
+        timerthread.start()
         logger.info('LaserClass initialised')
+
+    def interlockmonitor(self):
+        """Monitor the door interlock and switch off the laser if the door is open"""
+        while True:
+            if self.doorstate != GPIO.input(self.door_channel):
+                self.doorstate = GPIO.input(self.door_channel)
+                GPIO.output(self.door_led_channel, self.doorstate)
+                logger.info('LaserClass Door Interlock State = %s', self.doorstate)
+            if self.keystate == GPIO.input(self.key_channel):
+                self.keystate = not GPIO.input(self.key_channel)
+                logger.info('LaserClass Key Switch State = %s', self.keystate)
+            if self.doorstate + self.keystate == 2:
+                if self.laserenabled == 0:
+                    self.laserenabled = 1
+                    logger.info('LaserClass Laser is enabled')
+                    GPIO.output(self.enable_channel, 1)
+            else:
+                if self.laserenabled == 1:
+                    logger.info('LaserClass Laser is disabled')
+                    GPIO.output(self.enable_channel, 0)
+            sleep(0.5)
 
     def setpower(self, laserpower):
         """Set the laser power via the serial connection"""
@@ -53,36 +80,18 @@ class LaserClass:
         logger.info('LaserClass Changing Laser Maximum on time to %s seconds', maxtime)
         writesettings()
 
-    def keyswitch(self):
-        """Check if the key switch is on (N/C contact)"""
-        if GPIO.input(self.key_channel) == 0:
-            return 1
-        return 0
-
-    def doorinterlock(self):
-        """Check if the door interlock is engaged (N/O contact) if interlock is set return a 0"""
-        if GPIO.input(self.door_channel) == 1:
-            return 1
-        return 0
-
-    def alarmstatus(self):
-        """Check if the key and door interlock is engaged"""
-        if settings['testmode']:
-            return 0
-        return self.keyswitch() + self.doorinterlock()
-
     def laserstatus(self):
         """Return the laser (firning) status and the power setting"""
-        return {'laser': self.laserstate, 'power': settings['power'], 'keyswitch': self.keyswitch(),
-                'doorinterlock': self.doorinterlock(), 'autooff': self.maxtime}
+        return {'laser': self.laserstate, 'power': settings['power'], 'keyswitch': not self.keystate,
+                'doorinterlock': not self.doorstate, 'autooff': self.maxtime}
 
     def laserhttpsstatus(self):
         """Return the laser (firning) status and the power setting"""
-        if self.doorinterlock() == 0:
+        if self.doorstate == 1:
             doorstatus = 'Door Closed'
         else:
             doorstatus = 'Door Open'
-        if self.keyswitch() == 0:
+        if self.keystate == 1:
             keystatus = 'Key On'
         else:
             keystatus = 'Key Off'
@@ -93,7 +102,7 @@ class LaserClass:
     def laser(self, state):
         """Switch on or off the laser, if laser is on then run a thread to switch off if max time is exceeded"""
         if state == 1:
-            if self.alarmstatus() > 0:
+            if self.doorstate + self.keystate != 2:
                 logger.warning('LaserClass Laser was not switched on, key switch or door interlock was engaged')
                 self.laserstate = 0
                 return
@@ -122,20 +131,11 @@ class LaserClass:
                 self.laser(0)
             sleep(1)
 
-    def interlockmonitor(self):
-        """Monitor the door interlock and switch off the laser if the door is open"""
-        while True:
-            GPIO.output(self.door_led_channel, not self.doorinterlock())
-            if self.doorinterlock() + self.keyswitch() == 0:
-                GPIO.output(self.enable_channel, 1)
-            else:
-                GPIO.output(self.enable_channel, 0)
-            sleep(0.5)
+
 
 
 def updatesetting(newsetting): # must be a dict object
     """Update the settings with the new values"""
-    global settings
     if isinstance(newsetting, dict):
         for item in newsetting.keys():
             settings[item] = newsetting[item]
@@ -166,7 +166,7 @@ def parsecontrol(item, command):
                 pyrometer.laseroff()
             return pyrometer.temperature()
         if item == 'laseralarm':
-            return laser.alarmstatus()
+            return laser.doorstate + laser.keystate
         if item == 'laserstatus':
             return laser.laserstatus()
         if item == 'setlasertimeout':

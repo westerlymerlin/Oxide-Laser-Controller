@@ -11,8 +11,7 @@ from camera import video_camera_instance_0, video_camera_instance_1
 
 logger.info('Starting %s web app version %s', settings['app-name'], VERSION)
 logger.info('Api-Key = %s', settings['api-key'])
-if settings['testmode']:
-    logger.warning('Test mode enabled')
+
 app = Flask(__name__)
 
 
@@ -42,7 +41,7 @@ def threadlister():
 def index():
     """Main web status page"""
     return render_template('index.html', version=VERSION, appname=settings['app-name'],
-                           threads=threadlister(),  testmode=settings['testmode'])
+                           threads=threadlister())
 
 
 @app.route('/api', methods=['POST'])
