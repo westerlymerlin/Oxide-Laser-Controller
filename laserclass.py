@@ -16,7 +16,6 @@ class LaserClass:
     def __init__(self):
         self.dutycycle = settings['power']
         self.laserstate = 0
-        # self.laserthread = 0
         self.maxtime = settings['maxtime']
         self.key_channel = 12
         self.door_channel = 16
@@ -52,10 +51,10 @@ class LaserClass:
             if self.doorstate == GPIO.input(self.door_channel):
                 self.doorstate = not GPIO.input(self.door_channel)
                 GPIO.output(self.door_led_channel, self.doorstate)
-                logger.info('LaserClass Door Interlock State = %s', self.doorstate)
+                logger.info('LaserClass Door Interlock State = %i', self.doorstate)
             if self.keystate != GPIO.input(self.key_channel):
                 self.keystate = GPIO.input(self.key_channel)
-                logger.info('LaserClass Key Switch State = %s', self.keystate)
+                logger.info('LaserClass Key Switch State = %i', self.keystate)
             if self.doorstate + self.keystate == 2:
                 if self.laserenabled == 0:
                     self.laserenabled = 1
@@ -84,7 +83,7 @@ class LaserClass:
     def laserstatus(self):
         """Return the laser (firning) status and the power setting"""
         return {'laser': self.laserstate, 'power': settings['power'], 'keyswitch': not self.keystate,
-                'doorinterlock': not self.doorstate, 'autooff': self.maxtime}
+                'doorinterlock': not self.doorstate, 'autooff': self.maxtime, 'enabled': self.laserenabled}
 
     def laserhttpsstatus(self):
         """Return the laser (firning) status and the power setting"""
@@ -96,9 +95,16 @@ class LaserClass:
             keystatus = 'Key On'
         else:
             keystatus = 'Key Off'
-
-        return {'laser': self.laserstate, 'power': settings['power'], 'keyswitch': keystatus,
-                'doorinterlock': doorstatus, 'autooff': self.maxtime}
+        if self.laserstate == 1:
+            laserstatus = 'Laser On'
+        else:
+            laserstatus = 'Laser Off'
+        if self.laserenabled == 1:
+            laserenabled = 'Enabled'
+        else:
+            laserenabled = 'Disabled'
+        return {'laser': laserstatus, 'power': settings['power'], 'keyswitch': keystatus,
+                'doorinterlock': doorstatus, 'autooff': self.maxtime, 'enabled': laserenabled}
 
     def laser(self, state):
         """Switch on or off the laser, if laser is on then run a thread to switch off if max time is exceeded"""
@@ -167,7 +173,7 @@ def parsecontrol(item, command):
                 pyrometer.laseroff()
             return pyrometer.temperature()
         if item == 'laseralarm':
-            return laser.doorstate + laser.keystate
+            return laser.laserstatus()
         if item == 'laserstatus':
             return laser.laserstatus()
         if item == 'setlasertimeout':
