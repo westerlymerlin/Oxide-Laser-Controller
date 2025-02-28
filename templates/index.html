@@ -18,6 +18,8 @@ async function getstatusdata() {
   idtoupdate.innerHTML = statusdata.cputemperature;
   var idtoupdate = document.getElementById('123-laser');
   idtoupdate.innerHTML = statusdata.laser;
+  var idtoupdate = document.getElementById('123-laserenabled');
+  idtoupdate.innerHTML = statusdata.enabled;
   var idtoupdate = document.getElementById('123-power');
   idtoupdate.innerHTML = statusdata.power;
   var idtoupdate = document.getElementById('123-frequency');
@@ -61,7 +63,11 @@ async function getstatusdata() {
             <td class="tabledataleft"><B>Status</B></td>
          </thead>
             <tr>
-                    <td class="tabledataleft">Laser Status</td>
+                    <td class="tabledataleft">Laser Enabled</td>
+                    <td class="tabledataleft" id="123-laserenabled">awaiting-data</td>
+            </tr>
+            <tr>
+                    <td class="tabledataleft">Laser Active</td>
                     <td class="tabledataleft" id="123-laser">awaiting-data</td>
             </tr>
              <tr>
