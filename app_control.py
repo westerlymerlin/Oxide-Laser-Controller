@@ -6,7 +6,7 @@ import random
 import json
 from datetime import datetime
 
-VERSION = '1.5.0'
+VERSION = '1.5.1'
 
 def initialise():
     """Setup the settings structure with default values"""
@@ -95,7 +95,7 @@ def loadsettings():
             print('settings[%s] Not found in json file using default' % item)
             settingschanged = True
     if settings['api-key'] == 'change-me':
-        settings['api-key'] = generate_api_key(30)
+        settings['api-key'] = generate_api_key(128)
         settingschanged = True
     if settingschanged:
         writesettings()
