@@ -87,7 +87,7 @@ def showplogs():
     """Show the Application log"""
     cputemperature = read_cpu_temperature()
     logs = read_log_from_file(settings['logfilepath'])
-    return render_template('logs.html', rows=logs, log='Valve-Control log',
+    return render_template('logs.html', rows=logs, log='Application log',
                            cputemperature=cputemperature, appname=settings['app-name'], version=VERSION)
 
 
