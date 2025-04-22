@@ -34,7 +34,36 @@
 
 # app
 
-This is the main flask application - called by Gunicorn
+Laser Processing System Main Application
+
+This module serves as the main entry point and coordinator for the laser processing system,
+integrating various components including laser control, temperature monitoring, camera
+operations, and user interface management.
+
+Core Components:
+    - System initialization and shutdown procedures
+    - Hardware component coordination (laser, pyrometer, camera)
+    - Safety monitoring and emergency shutdown handling
+    - User interface event handling
+    - Settings management and validation
+    - Process logging and monitoring
+
+Application Flow:
+    1. System initialization and hardware checks
+    2. User interface setup
+    3. Component coordination (laser, pyrometer, camera)
+    4. Process monitoring and control
+    5. Safe shutdown procedures
+
+Dependencies:
+    - laserclass: Laser control interface
+    - pyroclass: Temperature monitoring
+    - camera: Image capture and processing
+    - app_control: Settings management
+    - logmanager: System logging
+
+Usage:
+    python app.py
 
 <a id="app.subprocess"></a>
 
@@ -118,7 +147,7 @@ Read a log from a file and reverse the order of the lines so newest is at the to
 def read_cpu_temperature()
 ```
 
-Read the CPU temperature
+Read the CPU temperature from the Raspberry Pi
 
 <a id="app.threadlister"></a>
 
@@ -139,7 +168,8 @@ Get a list of all threads running
 def index()
 ```
 
-Main web status page
+Main web status page, sets up the template for jscript on the page to retrieve status of the laser and the
+images from the two cameras. also contains the list of threads and the software name and version.
 
 <a id="app.api"></a>
 
@@ -150,7 +180,8 @@ Main web status page
 def api()
 ```
 
-API Endpoint for programatic access - needs request data to be posted in a json file
+API Endpoint for programatic access - needs request data to be posted in a json file and the api-key
+in the header, if the api-key does not match it will return an error
 
 <a id="app.statusdata"></a>
 
@@ -172,7 +203,7 @@ Status data read by javascript on default website
 def video_feed0()
 ```
 
-The image feed read by the browser
+The image feed read by the browser for camera 0
 
 <a id="app.video_feed1"></a>
 
@@ -183,7 +214,7 @@ The image feed read by the browser
 def video_feed1()
 ```
 
-The image feed read by the browser
+The image feed read by the browser camera 1
 
 <a id="app.showplogs"></a>
 
@@ -227,5 +258,5 @@ def showgelogs()
 def showslogs()
 ```
 
-Show the system log
+Show the last 2000 entries from the system log
 

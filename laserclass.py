@@ -1,5 +1,33 @@
 """
-Laser Class - manages the laser via  TTL PWM
+Laser Control System Implementation
+
+This module provides a comprehensive interface for controlling and monitoring a laser system
+through GPIO pins on a Raspberry Pi. It implements safety features including door interlocks,
+key switch monitoring, and automatic timeout protection.
+
+Key Features:
+- Laser power control via PWM (Pulse Width Modulation)
+- Safety interlocks monitoring (door and key switch)
+- Automatic laser shutdown after configurable timeout
+- Real-time status monitoring and reporting
+- Temperature monitoring via pyrometer integration
+- Settings persistence and management
+
+Classes:
+    LaserClass: Main class for laser control and monitoring
+
+Functions:
+    updatesetting: Updates system settings
+    parsecontrol: Main API entry point for laser control
+    reboot: System reboot functionality
+
+Dependencies:
+    - RPi.GPIO: For GPIO control
+    - time: For timing operations
+    - threading: For background monitoring
+    - app_control: For settings management
+    - pyroclass: For temperature monitoring
+    - logmanager: For system logging
 """
 # pylint: disable=E1101
 import os
@@ -12,7 +40,28 @@ from logmanager import logger
 
 
 class LaserClass:
-    """LaserClass"""
+    """
+    Manages the operation and monitoring of a laser control system.
+
+    This class provides functionalities to set up and manage the laser’s
+    interlocks, power settings, status monitoring, and auto shut-off features
+    based on safety and operational constraints. It continuously monitors the
+    external conditions such as door interlock and key state to ensure the
+    laser operates only under permissible conditions.
+
+    :ivar dutycycle: Represents the power setting for the laser in percentage.
+    :ivar laserstate: Indicates whether the laser is currently firing (1 for on, 0 for off).
+    :ivar maxtime: Maximum duration (in seconds) the laser can continuously run.
+    :ivar key_channel: GPIO channel used for monitoring the key switch state.
+    :ivar door_channel: GPIO channel used for monitoring the door interlock state.
+    :ivar door_led_channel: GPIO channel controlling the indicator LED for the door state.
+    :ivar enable_channel: GPIO channel used to enable or disable laser firing.
+    :ivar ttl_channel: GPIO channel used for controlling the laser with pulse width modulation.
+    :ivar laser_led_channel: GPIO channel controlling the indicator LED for the laser state.
+    :ivar doorstate: Current state of the door interlock (1 for closed, 0 for open).
+    :ivar keystate: Current state of the key switch (1 for on, 0 for off).
+    :ivar laserenabled: Indicates whether the laser is enabled (1 for enabled, 0 for disabled).
+    """
     def __init__(self):
         self.dutycycle = settings['power']
         self.laserstate = 0

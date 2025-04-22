@@ -1,5 +1,34 @@
 """
-This is the main flask application - called by Gunicorn
+Laser Processing System Main Application
+
+This module serves as the main entry point and coordinator for the laser processing system,
+integrating various components including laser control, temperature monitoring, camera
+operations, and user interface management.
+
+Core Components:
+    - System initialization and shutdown procedures
+    - Hardware component coordination (laser, pyrometer, camera)
+    - Safety monitoring and emergency shutdown handling
+    - User interface event handling
+    - Settings management and validation
+    - Process logging and monitoring
+
+Application Flow:
+    1. System initialization and hardware checks
+    2. User interface setup
+    3. Component coordination (laser, pyrometer, camera)
+    4. Process monitoring and control
+    5. Safe shutdown procedures
+
+Dependencies:
+    - laserclass: Laser control interface
+    - pyroclass: Temperature monitoring
+    - camera: Image capture and processing
+    - app_control: Settings management
+    - logmanager: System logging
+
+Usage:
+    python app.py
 """
 import subprocess
 from threading import enumerate as enumerate_threads
@@ -23,7 +52,7 @@ def read_log_from_file(file_path):
 
 
 def read_cpu_temperature():
-    """Read the CPU temperature"""
+    """Read the CPU temperature from the Raspberry Pi"""
     with open(settings['cputemp'], 'r', encoding='utf-8') as f:
         log = f.readline()
     return round(float(log) / 1000, 1)
@@ -39,14 +68,16 @@ def threadlister():
 
 @app.route('/')
 def index():
-    """Main web status page"""
+    """Main web status page, sets up the template for jscript on the page to retrieve status of the laser and the
+    images from the two cameras. also contains the list of threads and the software name and version."""
     return render_template('index.html', version=VERSION, appname=settings['app-name'],
                            threads=threadlister())
 
 
 @app.route('/api', methods=['POST'])
 def api():
-    """API Endpoint for programatic access - needs request data to be posted in a json file"""
+    """API Endpoint for programatic access - needs request data to be posted in a json file and the api-key
+     in the header, if the api-key does not match it will return an error"""
     try:
         logger.debug('API headers: %s', request.headers)
         logger.debug('API request: %s', request.json)
@@ -73,12 +104,12 @@ def statusdata():
 
 @app.route('/VideoFeed0')
 def video_feed0():
-    """The image feed read by the browser"""
+    """The image feed read by the browser for camera 0"""
     return Response(video_camera_instance_0.mpeg_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/VideoFeed1')
 def video_feed1():
-    """The image feed read by the browser"""
+    """The image feed read by the browser camera 1"""
     return Response(video_camera_instance_1.mpeg_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
@@ -111,7 +142,7 @@ def showgelogs():
 
 @app.route('/syslog')
 def showslogs():
-    """Show the system log"""
+    """Show the last 2000 entries from the system log"""
     cputemperature = read_cpu_temperature()
     log = subprocess.Popen('/bin/journalctl -n 2000', shell=True,
                            stdout=subprocess.PIPE).stdout.read().decode(encoding='utf-8')

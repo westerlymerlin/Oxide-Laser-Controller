@@ -24,7 +24,38 @@
 
 # pyroclass
 
-Pyro Class - controles the microepsilon pyrometer and rangefinder laser
+Pyrometer Interface and Temperature Monitoring
+
+This module implements the interface for pyrometer temperature measurements,
+providing real-time temperature monitoring and data handling capabilities for
+laser processing applications.
+
+Features:
+    - Pyrometer communication and initialization
+    - Real-time temperature reading and monitoring
+    - Temperature data processing and validation
+    - Error handling for sensor communication
+    - Temperature threshold monitoring
+
+Classes:
+    Pyrometer: Main class for pyrometer operations and temperature management
+
+Usage:
+    from pyroclass import Pyrometer
+
+    pyro = Pyrometer()
+    current_temp = pyro.get_temperature()
+
+    # Monitor temperature with safety thresholds
+    pyro.start_monitoring(max_temp=1200)
+
+Hardware Requirements:
+    - Compatible pyrometer sensor
+    - Serial/USB communication interface
+
+Note:
+    Temperature readings are provided in degrees Celsius.
+    Ensure proper pyrometer calibration before use in production environment.
 
 <a id="pyroclass.Timer"></a>
 
@@ -62,7 +93,13 @@ Pyro Class - controles the microepsilon pyrometer and rangefinder laser
 class PyroClass()
 ```
 
-Pyrometer class, reads the temperature from the pyromers and controls the rangefinder laser
+This class represents a Pyrometer interface to communicate with a serial device.
+
+The PyroClass establishes and manages communication with a pyrometer device
+through a serial port. It handles initializing the pyrometer, reading temperature
+values at regular intervals, maintaining a running average of temperature readings,
+and controlling a laser rangefinder. Various utility functions are available for
+interacting with the pyrometer's readings and laser control.
 
 <a id="pyroclass.PyroClass.__init__"></a>
 

@@ -16,9 +16,30 @@
 
 # camera
 
-Camera module, configures the webcam if it is avaialbe uses the
-cv2 library from opencv-python-headless
-Author: Gary Twinn
+Camera Control and Image Capture
+
+This module provides functionality for controlling and capturing images from a camera device.
+Handles camera setup, configuration, image acquisition, and cleanup operations.
+
+Features:
+    - Camera initialization and configuration
+    - Image capture and storage
+    - Camera parameter adjustments (exposure, resolution, etc.)
+    - Resource management (proper camera shutdown)
+
+Usage Example:
+    from camera import Camera
+
+    camera = Camera()
+    camera.capture('image.jpg')
+    camera.close()
+
+The module is designed for use with hardware camera interfaces and ensures proper
+resource handling for stable operation in long-running applications.
+
+Dependencies:
+    Hardware: Compatible camera device
+    Software: Appropriate camera drivers/libraries
 
 <a id="camera.cv2"></a>
 
