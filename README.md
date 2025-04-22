@@ -6,7 +6,7 @@
 Functional description and setup instructions are available in the file: [README.pdf](./README.pdf)
 It uses CH-340 USB to RS232 adapters for comms. 
 
-Application dcumentaton can be found in [readme.pdf](./readme.pdf)
+Application dcumentaton can be found in [manual.pdf](./manual.pdf)
 
 Python module documentation can be found in the folder: [docs](./docs/readme.md)
 

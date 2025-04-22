@@ -1,7 +1,25 @@
 """
-Settings module, reads the settings from a settings.json file. If it does not exist or a new setting
-has appeared it will creat from the defaults in the initialise function.
+Application Settings Management
+
+This module handles the application's configuration settings, providing functionality
+to read, write, and manage persistent application settings. It maintains centralized
+control over configuration parameters used across the application.
+
+Exports:
+    settings: Dictionary containing application configuration parameters
+    writesettings(): Function to persist settings changes to storage
+
+Usage:
+    from app_control import settings, writesettings
+
+    # Read settings
+    current_power = settings['power']
+
+    # Modify and persist settings
+    settings['power'] = new_value
+    writesettings()
 """
+
 import random
 import json
 from datetime import datetime
@@ -9,7 +27,17 @@ from datetime import datetime
 VERSION = '1.5.1'
 
 def initialise():
-    """Setup the settings structure with default values"""
+    """
+    Initializes and returns the default application settings.
+
+    This function creates and returns a dictionary that contains
+    the initial configuration for the Oxide Line Laser Controller.
+    The configurations include details related to logs, laser device
+    settings, and camera settings.
+
+    :return: A dictionary containing the application’s default settings.
+    :rtype: dict
+    """
     isettings = {'LastSave': '01/01/2000 00:00:01',
                  'api-key': 'change-me',
                  'app-name': 'Oxide Line Laser Controller',
@@ -60,13 +88,13 @@ def initialise():
 
 
 def generate_api_key(key_len):
-    """generate a new api key"""
+    """generate a new api key of key_len characters"""
     allowed_characters = "ABCDEFGHJKLMNPQRSTUVWXYZ-+~abcdefghijkmnopqrstuvwxyz123456789"
     return ''.join(random.choice(allowed_characters) for _ in range(key_len))
 
 
 def writesettings():
-    """Write settings to json file"""
+    """Write settings to the json file"""
     settings['LastSave'] = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
     with open('settings.json', 'w', encoding='utf-8') as outfile:
         json.dump(settings, outfile, indent=4, sort_keys=True)
@@ -84,7 +112,8 @@ def readsettings():
 
 
 def loadsettings():
-    """Replace the default settings with thsoe from the json files"""
+    """Replace the default values in the settings dict object with thsoe from the json files.
+    If the api-key is the default value then generate a new 128 character one."""
     global settings
     settingschanged = False
     fsettings = readsettings()
