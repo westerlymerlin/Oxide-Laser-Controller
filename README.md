@@ -1,33 +1,36 @@
 # UCL-Oxide-Laser-Controller
 
+A Python application for controlling LaserTree K60 Laser and micro-epsilon infrared pyrometer systems via HTTP API.
 
-### Python project to control a LaserTree K60 Laser and a micro-epsilon infrared pyrometer, is controlled via an HTTP API
+## Overview
 
-Functional description and setup instructions are available in the file: [README.pdf](./README.pdf)
-It uses CH-340 USB to RS232 adapters for comms. 
+This project provides a Flask-based API for precise control of laser and temperature measurement equipment used in oxide research. The system uses CH-340 USB to RS232 adapters for communication with the hardware devices.
 
-Application dcumentaton can be found in [manual.pdf](./manual.pdf)
+## Documentation
 
-Python module documentation can be found in the folder: [docs](./docs/readme.md)
+- **Setup Instructions**: Detailed setup information is available in [manual.pdf](./manual.pdf)
+- **API Reference**: Python module documentation in the [docs](./docs/readme.md) folder
+- **Change Log**: View version history in [changelog.txt](./changelog.txt)
 
-Change log can be found in the file [changelog.txt](./changelog.txt)
+## System Architecture
 
-`app.py`			    Flask application that manages the API 
+The main application entry point is `app.py`, which implements the Flask application that manages the HTTP API.
 
----
+## API Reference
 
+The system accepts JSON commands via its HTTP interface:
 
-### JSON Commands
-| Command                    | Description                                                                    |
-|----------------------------|--------------------------------------------------------------------------------|
-| `{"laser": "off"}`         | Switch off the laser                                                           |  
-| `{"laser": "on"}`          | Switch on the laser                                                            |
-| `{"setlaserpower": nn.n}`  | set the laser power to nn.n%                                                   | 
-| `{"laserstatus": 1}`       | Read the laser status (returns power and if the laser is firing)               | 
-| `{"setlasertimeout": nnn}` | change the default maximum time the laser can fire to nnn seconds (default is 300) | 
-| `{'gettemperature', 1}` | Return the pyrometer temperature and maximum attained temperature              | 
-| `{'resetmax', 1}` | Reset the maximum pyrometer temperature reading                                |  
-| `{'pyrolaser', 'off'}` | Switch off the rangefinder laser                                               | 
-| `{'pyrolaser', 'on'}` | Switch on the rangefinder laser                                                |
-| `{"restart": "pi"}` | Restart the rsapberry pi after a 15 second delay                               |
+| Command | Format | Description |
+|---------|--------|-------------|
+| Laser Control | `{"laser": "off"}` | Switch off the laser |
+| | `{"laser": "on"}` | Switch on the laser |
+| | `{"setlaserpower": nn.n}` | Set laser power to nn.n% |
+| | `{"laserstatus": 1}` | Read laser status (returns power and firing state) |
+| | `{"setlasertimeout": nnn}` | Change maximum laser firing time to nnn seconds (default: 300) |
+| Temperature Monitoring | `{"gettemperature": 1}` | Return pyrometer temperature and maximum attained temperature |
+| | `{"resetmax": 1}` | Reset the maximum pyrometer temperature reading |
+| Rangefinder Control | `{"pyrolaser": "off"}` | Switch off the rangefinder laser |
+| | `{"pyrolaser": "on"}` | Switch on the rangefinder laser |
+| System Control | `{"restart": "pi"}` | Restart the Raspberry Pi after a 15 second delay |
+
 
