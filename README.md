@@ -1,6 +1,6 @@
 # UCL-Oxide-Laser-Controller
 
-A Python application for controlling LaserTree K60 Laser and micro-epsilon infrared pyrometer systems via HTTP API.
+A Python application for controlling a LaserTree K60 Laser and micro-epsilon infrared pyrometer systems via HTTP API.
 
 ## Overview
 
