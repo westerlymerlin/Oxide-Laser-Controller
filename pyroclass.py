@@ -84,13 +84,43 @@ class PyroClass:
             logger.error('PyroClass error opening port %s', self.port.port)
 
     def close(self):
-        """Close the serial port"""
+        """
+        Closes the communication port associated with the PyroClass Pyrometer
+        object. This function ensures the port is properly closed and logs this
+        action. It also updates the `portready` status attribute to indicate
+        that the port is no longer active.
+
+        :raises AttributeError: If the `port` attribute or its methods are not
+            properly initialized or accessible.
+        :raises IOError: If there is an issue with closing the port.
+
+        :return: None
+        """
         self.port.close()
         logger.info('PyroClass Pyrometer port %s closed', self.port.port)
         self.portready = 0
 
     def readtimer(self):
-        """regular timer, reads the temperature every 5 seconds, keeps track of the maximum temperatiure read"""
+        """
+        Continuously reads temperature and laser data from a connected port while the
+        port is ready. The method writes specific commands to the port to request
+        temperature and laser information and processes the data returned.
+
+        When the port is not ready or there is an exception during data reading, the
+        temperature (`value`) is reset to 0. Temperature data is processed to calculate
+        statistics like `maxtemp` and optionally update an average temperature.
+
+        Potential logging operations are carried out at various points:
+        - To debug temperature and laser value read operations.
+        - To log any exceptions encountered during execution.
+
+        :raises Exception: Handles any exceptions during port communication, logs the
+            exception, and ensures temperature value is reset to mitigate impact.
+
+        :param
+
+        :return: None
+        """
         while self.portready == 1:
             try:
                 if self.portready == 1:
@@ -116,7 +146,17 @@ class PyroClass:
             sleep(self.readinterval)
 
     def setaverage(self):
-        """Add the temp value to the running average list"""
+        """
+        Updates the running average temperature and maintains tracking of the maximum average
+        temperature observed. The function adjusts the list of temperature readings depending
+        on the current temperature value and predetermined settings. It also calculates a new
+        average temperature from the updated list and compares it with the maximum average
+        temperature recorded so far.
+
+        :param self: An instance of the class containing attributes `value`, `tempseq`,
+            `averagetemp`, and `averagemaxtemp`, which are necessary for the computation.
+        :return: None
+        """
         if self.value <= settings['pyro-min-temp']:
             self.tempseq = [settings['pyro-min-temp']] * settings['pyro-running-average']
         elif self.value > (self.averagetemp + 20):  # speed up getitng to average while sample is heating
@@ -128,14 +168,25 @@ class PyroClass:
         self.averagemaxtemp = max(self.averagetemp, self.averagemaxtemp)
 
     def resetmax(self):
-        """Reset the maximum temerature"""
+        """
+        Resets the maximum and average maximum temperature to a predefined minimum value and updates
+        the temperature.
+
+        :return: The current temperature of the PyroClass after resetting maximum values
+        :rtype: Any
+        """
         logger.info('PyroClass max temp reset')
         self.maxtemp = settings['pyro-min-temp']
         self.averagemaxtemp = settings['pyro-min-temp']
         return self.temperature()
 
     def laseron(self):
-        """Switch on the rangefinder laser and set a timer to switch it off after maxtime"""
+        """
+        Turns the laser on by sending a command to the port, if the port is ready.
+        Additionally, it starts a timer thread to turn the laser off after 0.5 seconds.
+
+        :return: None
+        """
         if self.portready == 1:
             self.port.write(self.laser_on)
             self.laser = 1
@@ -144,13 +195,33 @@ class PyroClass:
             laserthread.start()
 
     def laseroff(self):
-        """Switch off the rangefinder laser"""
+        """
+        Turns off the laser by writing the appropriate command to the port if the port
+        is ready. Updates the laser status attribute accordingly.
+
+        :raises AttributeError: If a required attribute is not defined.
+        :param self: The instance of the object performing the action.
+        :return: None
+        """
         if self.portready == 1:
             self.port.write(self.laser_off)
             self.laser = 0
 
     def laserofftimer(self):
-        """Auto switch off of the laser after maxtime seconds"""
+        """
+        Turns off the laser after a specific period of time set in the
+        settings if a laser is still active.
+
+        This method continuously monitors the laser's state and checks
+        if the maximum allowed running time has been exceeded. If the
+        maximum time has been reached and the laser is still active, the
+        laser will be turned off. It pauses execution for 1 second between
+        checks to reduce resource usage while monitoring.
+
+        :raises KeyError: If the 'maxtime' key is not present in settings.
+        :raises AttributeError: If the 'laser' attribute or 'laseroff' method
+            is missing or improperly configured.
+        """
         offtime = time() + settings['maxtime']
         while self.laser == 1:
             if time() > offtime:
@@ -158,7 +229,24 @@ class PyroClass:
             sleep(1)
 
     def temperature(self):
-        """API Call: return pyrometer values and settings as a json message"""
+        """
+        Provides a dictionary containing current temperature readings from various sensors.
+
+        The dictionary includes detailed information such as the current temperature,
+        average temperature, laser temperature, maximum temperature,
+        and average maximum temperature. This method is used to obtain
+        a snapshot of the relevant temperature-related metrics.
+
+        :raises No exception is explicitly raised in this method as it only returns a dictionary.
+        :param None: This method does not take any external parameters.
+        :return: A dictionary containing the following keys:
+                 - 'temperature': Current temperature
+                 - 'averagetemp': Average temperature
+                 - 'pyrolaser': Laser temperature (pyrolaser)
+                 - 'maxtemp': Maximum temperature
+                 - 'averagemaxtemp': Average maximum temperature
+        :rtype: dict
+        """
         return {'temperature': self.value, 'averagetemp': self.averagetemp, 'pyrolaser': self.laser,
                 'maxtemp': self.maxtemp, 'averagemaxtemp': self.averagemaxtemp}
 
