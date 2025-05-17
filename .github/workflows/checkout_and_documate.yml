@@ -11,5 +11,4 @@ on:
 jobs:
   checkout-and-document:
     uses: westerlymerlin/pyAutomate/.github/workflows/docs_from_code_linux.yml@master
-    secrets:
-      GH_TOKEN: ${{ secrets.ACTIONSECRET }}
+
