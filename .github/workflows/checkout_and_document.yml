@@ -15,5 +15,5 @@ jobs:
     uses: westerlymerlin/pyAutomate/.github/workflows/docs_from_code_linux.yml@master
     with:
       secrets:
-        GHTOKEN: ${{ secrets.ACTIONSECRET }}
+        GH_ACTION_SECRET: ${{ secrets.ACTIONSECRET }}
 
