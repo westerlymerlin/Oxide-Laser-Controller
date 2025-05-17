@@ -95,7 +95,11 @@ class LaserClass:
         logger.info('LaserClass initialised')
 
     def interlockmonitor(self):
-        """Monitor the door interlock and switch off the laser if the door is open"""
+        """
+        Monitors the state of the door and key inputs, and controls the laser enable
+        state based on their statuses. This method performs continuous checks and
+        updates the states accordingly by interacting with GPIO channels.
+        """
         while True:
             if self.doorstate == GPIO.input(self.door_channel):
                 self.doorstate = not GPIO.input(self.door_channel)
@@ -117,25 +121,55 @@ class LaserClass:
             sleep(0.5)
 
     def setpower(self, laserpower):
-        """Set the laser power via the serial connection"""
+        """
+        Set the laser power by adjusting the duty cycle and updating the system
+        settings. The laser power is applied by modifying the internal duty cycle
+        parameter and saved to persistent storage.
+        """
         self.dutycycle = laserpower
         settings['power'] = laserpower
         writesettings()
 
     def setmaxtimeout(self, maxtime):
-        """API call to set the maximum time that the laser can run"""
+        """
+        Sets the maximum timeout for the laser system. This determines the maximum time
+        the laser can remain active.
+        """
         self.maxtime = maxtime
         settings['maxtime'] = maxtime
         logger.info('LaserClass Changing Laser Maximum on time to %s seconds', maxtime)
         writesettings()
 
     def laserstatus(self):
-        """Return the laser (firning) status and the power setting"""
+        """
+        Retrieves the current laser status and returns it as a dictionary. The returned
+        status includes details about the laser power, keyswitch state, door interlock
+        state, automatic shut-off time, and whether the laser is enabled.
+
+        :return: A dictionary containing the following keys and their corresponding
+                 states:
+                 - 'laser': The current state of the laser.
+                 - 'power': The power settings of the laser.
+                 - 'keyswitch': The state of the keyswitch; True for off and False for
+                   on.
+                 - 'doorinterlock': The state of the door interlock; True for disengaged
+                   and False for engaged.
+                 - 'autooff': The maximum automatic shut-off time for the laser.
+                 - 'enabled': A boolean indicating whether the laser is enabled.
+        :rtype: dict
+        """
         return {'laser': self.laserstate, 'power': settings['power'], 'keyswitch': not self.keystate,
                 'doorinterlock': not self.doorstate, 'autooff': self.maxtime, 'enabled': self.laserenabled}
 
     def laserhttpsstatus(self):
-        """Return the laser (firning) status and the power setting"""
+        """
+        Generates and returns the current status of the laser system in a dictionary format.
+
+        This method determines the statuses of various components of the laser system,
+        including the door state, key switch, laser operation, and laser enablement. It
+        then combines these statuses along with configured power and auto-off time into
+        a single dictionary to provide a comprehensive system status.
+        """
         if self.doorstate == 1:
             doorstatus = 'Door Closed'
         else:
@@ -156,7 +190,22 @@ class LaserClass:
                 'doorinterlock': doorstatus, 'autooff': self.maxtime, 'enabled': laserenabled}
 
     def laser(self, state):
-        """Switch on or off the laser, if laser is on then run a thread to switch off if max time is exceeded"""
+        """
+        Controls the laser state by turning it on or off depending on the provided state
+        parameter and system conditions.
+
+        The method activates or deactivates the laser based on the `state` parameter and
+        internal conditions such as the door and key interlock states. When the laser is
+        turned on, it adjusts the pyrometer read interval, sets up and starts PWM for the
+        laser and laser LED, and initiates a timer to automatically turn off the laser if
+        not manually shut down. If the laser is turned off, it resets the pyrometer read
+        interval and stops the PWM signals.
+
+        :param state: Current desired state of the laser. It should be 1 to turn on the
+                      laser or any other value to turn it off.
+        :type state: int
+        :return: None
+        """
         if state == 1:
             if self.doorstate + self.keystate != 2:
                 logger.warning('LaserClass Laser was not switched on, key switch or door interlock was engaged')
@@ -180,14 +229,18 @@ class LaserClass:
             self.laserled_pwm.stop()
 
     def laserofftimer(self):
-        """Auto switch off of the laser after maxtime seconds"""
+        """
+        Sets a timer to automatically turn off the laser after a specified maximum time is reached.
+
+        This method checks if the laser is currently on. If the laser is on, it calculates
+        a future time based on the current time and the maximum allowed time. The laser
+        will then be turned off after the calculated duration has passed.
+        """
         offtime = time() + settings['maxtime']
         while self.laserstate == 1:
             if time() > offtime:
                 self.laser(0)
             sleep(1)
-
-
 
 
 def updatesetting(newsetting): # must be a dict object
@@ -199,8 +252,14 @@ def updatesetting(newsetting): # must be a dict object
 
 
 def parsecontrol(item, command):
-    """Main API entrypoint, recieves an **item** and **command** parameter"""
-    # print('%s : %s' % (item, command))
+    """
+    Parses control commands and executes corresponding operations.
+
+    The function interprets a given `item` and `command`, then performs the specified
+    operation, which can range from laser control to fetching settings, depending upon
+    the `item` value. The operations may include laser power management, temperature
+    retrieval, laser status updates, system restarts, and more.
+    """
     try:
         if item == 'laser':
             if command == 'on':
