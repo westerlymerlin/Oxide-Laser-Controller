@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>London Geochronology Centre - {{appname}}</title>
+<title>PyMS - {{appname}}</title>
 <link href="{{ url_for('static',filename='css/text.css') }}" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <script>
@@ -47,7 +47,7 @@ async function getstatusdata() {
 <body onload="getstatusdata()">
 	  <section class="banner">
 		  <div >
-              <P class="logo">London Geochronology Centre - {{appname}} - Server Status &nbsp CPU <strong id="123-cpu">awaiting-data</strong>&deg;C</P>
+              <P class="logo">PyMS - {{appname}} - Server Status &nbsp CPU <strong id="123-cpu">awaiting-data</strong>&deg;C</P>
               <p class="breadcrumbtext"><a href = "/" class="breadcrumblink">Return to index</a> &nbsp|&nbsp
               <a href = "/pylog" class="breadcrumblink">Application Log</a> &nbsp|&nbsp
               <a href = "/guaccesslog" class="breadcrumblink">Website Access Log</a> &nbsp|&nbsp
@@ -132,7 +132,7 @@ async function getstatusdata() {
     <p>&nbsp</p>
 	</section>
   <section class="banner">
- <div class ="copyright"><strong>Software Version</strong> {{version}}<br>&copy;2025 - <strong>London Geochronology Centre</strong></div>
+ <div class ="copyright"><strong>Software Version</strong> {{version}}<br>&copy;2025 - <strong>Gary Twinn</strong></div>
 	  </section>
 </body>
 </html>
