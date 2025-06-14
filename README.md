@@ -1,4 +1,4 @@
-# UCL-Oxide-Laser-Controller
+# Oxide Laser Controller Service
 
 A Python application for controlling a LaserTree K60 Laser and micro-epsilon infrared pyrometer systems via HTTP API.
 
