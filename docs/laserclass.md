@@ -1,28 +1,4 @@
-# Contents for: laserclass
-
-* [laserclass](#laserclass)
-  * [os](#laserclass.os)
-  * [sleep](#laserclass.sleep)
-  * [time](#laserclass.time)
-  * [Timer](#laserclass.Timer)
-  * [GPIO](#laserclass.GPIO)
-  * [settings](#laserclass.settings)
-  * [writesettings](#laserclass.writesettings)
-  * [pyrometer](#laserclass.pyrometer)
-  * [logger](#laserclass.logger)
-  * [LaserClass](#laserclass.LaserClass)
-    * [\_\_init\_\_](#laserclass.LaserClass.__init__)
-    * [interlockmonitor](#laserclass.LaserClass.interlockmonitor)
-    * [setpower](#laserclass.LaserClass.setpower)
-    * [setmaxtimeout](#laserclass.LaserClass.setmaxtimeout)
-    * [laserstatus](#laserclass.LaserClass.laserstatus)
-    * [laserhttpsstatus](#laserclass.LaserClass.laserhttpsstatus)
-    * [laser](#laserclass.LaserClass.laser)
-    * [laserofftimer](#laserclass.LaserClass.laserofftimer)
-  * [updatesetting](#laserclass.updatesetting)
-  * [parsecontrol](#laserclass.parsecontrol)
-  * [reboot](#laserclass.reboot)
-  * [laser](#laserclass.laser)
+# None
 
 <a id="laserclass"></a>
 
