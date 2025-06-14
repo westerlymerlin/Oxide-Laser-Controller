@@ -1,24 +1,4 @@
-# Contents for: pyroclass
-
-* [pyroclass](#pyroclass)
-  * [Timer](#pyroclass.Timer)
-  * [sleep](#pyroclass.sleep)
-  * [time](#pyroclass.time)
-  * [b64decode](#pyroclass.b64decode)
-  * [serial](#pyroclass.serial)
-  * [settings](#pyroclass.settings)
-  * [logger](#pyroclass.logger)
-  * [PyroClass](#pyroclass.PyroClass)
-    * [\_\_init\_\_](#pyroclass.PyroClass.__init__)
-    * [close](#pyroclass.PyroClass.close)
-    * [readtimer](#pyroclass.PyroClass.readtimer)
-    * [setaverage](#pyroclass.PyroClass.setaverage)
-    * [resetmax](#pyroclass.PyroClass.resetmax)
-    * [laseron](#pyroclass.PyroClass.laseron)
-    * [laseroff](#pyroclass.PyroClass.laseroff)
-    * [laserofftimer](#pyroclass.PyroClass.laserofftimer)
-    * [temperature](#pyroclass.PyroClass.temperature)
-  * [pyrometer](#pyroclass.pyrometer)
+# None
 
 <a id="pyroclass"></a>
 
