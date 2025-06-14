@@ -1,16 +1,4 @@
-# Contents for: camera
-
-* [camera](#camera)
-  * [cv2](#camera.cv2)
-  * [logger](#camera.logger)
-  * [settings](#camera.settings)
-  * [VideoCamera](#camera.VideoCamera)
-    * [\_\_init\_\_](#camera.VideoCamera.__init__)
-    * [\_\_del\_\_](#camera.VideoCamera.__del__)
-    * [get\_frame](#camera.VideoCamera.get_frame)
-    * [mpeg\_stream](#camera.VideoCamera.mpeg_stream)
-  * [video\_camera\_instance\_0](#camera.video_camera_instance_0)
-  * [video\_camera\_instance\_1](#camera.video_camera_instance_1)
+# None
 
 <a id="camera"></a>
 

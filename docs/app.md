@@ -1,34 +1,4 @@
-# Contents for: app
-
-* [app](#app)
-  * [subprocess](#app.subprocess)
-  * [enumerate\_threads](#app.enumerate_threads)
-  * [Flask](#app.Flask)
-  * [render\_template](#app.render_template)
-  * [jsonify](#app.jsonify)
-  * [request](#app.request)
-  * [Response](#app.Response)
-  * [logger](#app.logger)
-  * [pyrometer](#app.pyrometer)
-  * [parsecontrol](#app.parsecontrol)
-  * [laser](#app.laser)
-  * [settings](#app.settings)
-  * [VERSION](#app.VERSION)
-  * [video\_camera\_instance\_0](#app.video_camera_instance_0)
-  * [video\_camera\_instance\_1](#app.video_camera_instance_1)
-  * [app](#app.app)
-  * [read\_log\_from\_file](#app.read_log_from_file)
-  * [read\_cpu\_temperature](#app.read_cpu_temperature)
-  * [threadlister](#app.threadlister)
-  * [index](#app.index)
-  * [api](#app.api)
-  * [statusdata](#app.statusdata)
-  * [video\_feed0](#app.video_feed0)
-  * [video\_feed1](#app.video_feed1)
-  * [showplogs](#app.showplogs)
-  * [showgalogs](#app.showgalogs)
-  * [showgelogs](#app.showgelogs)
-  * [showslogs](#app.showslogs)
+# None
 
 <a id="app"></a>
 
