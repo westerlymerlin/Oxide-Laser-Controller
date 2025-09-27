@@ -1,4 +1,4 @@
 #!/bin/bash
 
-source /home/pi/.venv/bin/activate
+source /home/tstpi/.venv/bin/activate
 

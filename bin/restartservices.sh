@@ -5,22 +5,22 @@
 echo "
 **** stoping gunicorn and python app ****
 "
-sudo systemctl stop gunicorn.service
+/bin/sudo /bin/systemctl stop gunicorn.service
 
 echo "
 **** stopping nginx ****
 "
-sudo systemctl stop nginx
+/bin/sudo /bin/systemctl stop nginx
 
 echo "
 **** staring nginx ****
 "
-sudo systemctl start nginx
+/bin/sudo /bin/systemctl start nginx
 
 echo "
 **** starting gunicorn and python app ****
 "
-sudo systemctl start gunicorn.service
+/bin/sudo /bin/systemctl start gunicorn.service
 
 echo "
 ******** restart completed ********
