@@ -4,36 +4,29 @@
 
 # app
 
-Laser Processing System Main Application
+Flask web application for Raspberry Pi system monitoring and control.
 
-This module serves as the main entry point and coordinator for the laser processing system,
-integrating various components including laser control, temperature monitoring, camera
-operations, and user interface management.
+This module provides a web interface and API endpoints for monitoring and controlling
+a Raspberry Pi system. It includes features for:
+- System status monitoring (CPU temperature, running threads)
+- Log viewing (Application, Gunicorn, System logs)
+- RESTful API endpoints with authentication
+- Real-time status updates via JavaScript
 
-Core Components:
-    - System initialization and shutdown procedures
-    - Hardware component coordination (laser, pyrometer, camera)
-    - Safety monitoring and emergency shutdown handling
-    - User interface event handling
-    - Settings management and validation
-    - Process logging and monitoring
+The application runs on Gunicorn when deployed on Raspberry Pi and includes
+various endpoints for both web interface and programmatic access.
 
-Application Flow:
-    1. System initialization and hardware checks
-    2. User interface setup
-    3. Component coordination (laser, pyrometer, camera)
-    4. Process monitoring and control
-    5. Safe shutdown procedures
+Routes:
+    / : Main status page
+    /statusdata : JSON endpoint for live status updates
+    /api : Protected API endpoint for system control
+    /pylog : Application log viewer
+    /guaccesslog : Gunicorn access log viewer
+    /guerrorlog : Gunicorn error log viewer
+    /syslog : System log viewer
 
-Dependencies:
-    - laserclass: Laser control interface
-    - pyroclass: Temperature monitoring
-    - camera: Image capture and processing
-    - app_control: Settings management
-    - logmanager: System logging
-
-Usage:
-    python app.py
+Authentication:
+    API endpoints require a valid API key passed in the 'Api-Key' header.
 
 <a id="app.subprocess"></a>
 
@@ -42,6 +35,14 @@ Usage:
 <a id="app.enumerate_threads"></a>
 
 ## enumerate\_threads
+
+<a id="app.Timer"></a>
+
+## Timer
+
+<a id="app.datetime"></a>
+
+## datetime
 
 <a id="app.Flask"></a>
 
@@ -59,33 +60,61 @@ Usage:
 
 ## request
 
+<a id="app.redirect"></a>
+
+## redirect
+
+<a id="app.session"></a>
+
+## session
+
+<a id="app.url_for"></a>
+
+## url\_for
+
+<a id="app.send_file"></a>
+
+## send\_file
+
 <a id="app.Response"></a>
 
 ## Response
 
-<a id="app.logger"></a>
+<a id="app.authenticate"></a>
 
-## logger
+## authenticate
 
-<a id="app.pyrometer"></a>
+<a id="app.VERSION"></a>
 
-## pyrometer
+## VERSION
 
-<a id="app.parsecontrol"></a>
+<a id="app.API_KEY"></a>
 
-## parsecontrol
-
-<a id="app.laser"></a>
-
-## laser
+## API\_KEY
 
 <a id="app.settings"></a>
 
 ## settings
 
-<a id="app.VERSION"></a>
+<a id="app.logger"></a>
 
-## VERSION
+## logger
+
+<a id="app.set_oled"></a>
+
+## set\_oled
+
+<a id="app.parsecontrol"></a>
+
+## parsecontrol
+
+<a id="app.serial_ports"></a>
+
+## serial\_ports
+
+<a id="app.serial_port_info"></a>
+
+## serial\_port\_info
 
 <a id="app.video_camera_instance_0"></a>
 
@@ -98,6 +127,14 @@ Usage:
 <a id="app.app"></a>
 
 #### app
+
+<a id="app.YEAR"></a>
+
+#### YEAR
+
+<a id="app.oledthread"></a>
+
+#### oledthread
 
 <a id="app.read_log_from_file"></a>
 
@@ -117,7 +154,7 @@ Read a log from a file and reverse the order of the lines so newest is at the to
 def read_cpu_temperature()
 ```
 
-Read the CPU temperature from the Raspberry Pi
+Read the CPU temperature and returns in in Celsius
 
 <a id="app.threadlister"></a>
 
@@ -138,20 +175,7 @@ Get a list of all threads running
 def index()
 ```
 
-Main web status page, sets up the template for jscript on the page to retrieve status of the laser and the
-images from the two cameras. also contains the list of threads and the software name and version.
-
-<a id="app.api"></a>
-
-#### api
-
-```python
-@app.route('/api', methods=['POST'])
-def api()
-```
-
-API Endpoint for programatic access - needs request data to be posted in a json file and the api-key
-in the header, if the api-key does not match it will return an error
+Main web status page
 
 <a id="app.statusdata"></a>
 
@@ -162,7 +186,19 @@ in the header, if the api-key does not match it will return an error
 def statusdata()
 ```
 
-Status data read by javascript on default website
+Status data read by javascript on default website so the page shows near live values
+
+<a id="app.api"></a>
+
+#### api
+
+```python
+@app.route('/api', methods=['POST'])
+def api()
+```
+
+API Endpoint for programatic access - needs request data to be posted in a json file. Contains a check for a
+valid API key.
 
 <a id="app.video_feed0"></a>
 
@@ -186,6 +222,67 @@ def video_feed1()
 
 The image feed read by the browser camera 1
 
+<a id="app.login"></a>
+
+#### login
+
+```python
+@app.route('/auth', methods=['GET', 'POST'])
+def login()
+```
+
+Handles authentication by providing a login interface for users. It supports both GET
+and POST methods. On successful authentication, the user is redirected to the "config"
+page. If authentication fails, the user is informed about the failure and can attempt
+to log in again.
+
+<a id="app.config"></a>
+
+#### config
+
+```python
+@app.route('/config', methods=['GET', 'POST'])
+def config()
+```
+
+Handles the configuration for the application through GET and POST methods.
+
+This function provides an endpoint for configuring various application settings.
+For POST requests, it processes forms with specific keys to update corresponding
+settings. For GET requests, it renders the configuration template with current
+application version, settings, network information, and the current year.
+
+<a id="app.config_serial"></a>
+
+#### config\_serial
+
+```python
+@app.route('/serial', methods=['GET', 'POST'])
+def config_serial()
+```
+
+Handles configuration and updates for a specific serial port.
+
+Provides functionality to view and configure serial port settings,
+as well as update or delete messages associated with the serial port.
+The function supports GET and POST HTTP methods to retrieve serial
+port-related pages or process submitted forms.
+
+<a id="app.download_manual"></a>
+
+#### download\_manual
+
+```python
+@app.route('/documentation')
+def download_manual()
+```
+
+Handles the request to download the application's manual.
+
+This function serves the PDF manual of the application as a downloadable
+attachment. The manual file's name is retrieved from the application
+settings and provided as the download name.
+
 <a id="app.showplogs"></a>
 
 #### showplogs
@@ -195,7 +292,7 @@ The image feed read by the browser camera 1
 def showplogs()
 ```
 
-Show the Application log
+Show the Application log web page
 
 <a id="app.showgalogs"></a>
 
@@ -206,7 +303,7 @@ Show the Application log
 def showgalogs()
 ```
 
-"Show the Gunicorn Access Log
+"Show the Gunicorn Access Log web page
 
 <a id="app.showgelogs"></a>
 
@@ -217,7 +314,7 @@ def showgalogs()
 def showgelogs()
 ```
 
-"Show the Gunicorn Errors Log
+"Show the Gunicorn Errors Log web page
 
 <a id="app.showslogs"></a>
 
@@ -228,5 +325,5 @@ def showgelogs()
 def showslogs()
 ```
 
-Show the last 2000 entries from the system log
+Show the last 2000 lines from the system log on a web page
 

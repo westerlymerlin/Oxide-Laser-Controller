@@ -28,6 +28,8 @@ Log Format:
 Log Files:
     Logs are stored with automatic rotation to prevent excessive disk usage
     while maintaining historical records.
+
+Author: Gary Twinn
 """
 import os
 import sys

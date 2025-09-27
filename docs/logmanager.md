@@ -34,6 +34,8 @@ Log Files:
     Logs are stored with automatic rotation to prevent excessive disk usage
     while maintaining historical records.
 
+Author: Gary Twinn
+
 <a id="logmanager.os"></a>
 
 ## os

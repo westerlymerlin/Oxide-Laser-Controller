@@ -1,138 +1,119 @@
 <!doctype html>
 <html lang="en-US">
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PyMS - {{appname}}</title>
-<link href="{{ url_for('static',filename='css/text.css') }}" rel="stylesheet" type="text/css">
-<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-    <script>
-
-setInterval(getstatusdata, 1000);
-
-async function getstatusdata() {
-  const response = await fetch("/statusdata");
-  const statusdata = await response.json();
-  var idtoupdate = document.getElementById('123-cpu');
-  idtoupdate.innerHTML = statusdata.cputemperature;
-  var idtoupdate = document.getElementById('123-laser');
-  idtoupdate.innerHTML = statusdata.laser;
-  var idtoupdate = document.getElementById('123-laserenabled');
-  idtoupdate.innerHTML = statusdata.enabled;
-  var idtoupdate = document.getElementById('123-power');
-  idtoupdate.innerHTML = statusdata.power;
-  var idtoupdate = document.getElementById('123-frequency');
-  idtoupdate.innerHTML = statusdata.laserfrequency;
-  var idtoupdate = document.getElementById('123-autooff');
-  idtoupdate.innerHTML = statusdata.autooff;
-  var idtoupdate = document.getElementById('123-door');
-  idtoupdate.innerHTML = statusdata.doorinterlock;
-  var idtoupdate = document.getElementById('123-keyswitch');
-  idtoupdate.innerHTML = statusdata.keyswitch;
-  var idtoupdate = document.getElementById('123-temp');
-  idtoupdate.innerHTML = statusdata.temperature;
-  var idtoupdate = document.getElementById('123-average-temp');
-  idtoupdate.innerHTML = statusdata.averagetemp;
-  var idtoupdate = document.getElementById('123-average-max-temp');
-  idtoupdate.innerHTML = statusdata.averagemaxtemp;
-  var idtoupdate = document.getElementById('123-maxtemp');
-  idtoupdate.innerHTML = statusdata.maxtemp;
-  var idtoupdate = document.getElementById('123-pyrolaser');
-  idtoupdate.innerHTML = statusdata.pyrolaser;
-}
-
-</script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{settings['app-name']}}</title>
+    <link href="{{ url_for('static',filename='css/text.css') }}" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 </head>
 <body onload="getstatusdata()">
-	  <section class="banner">
-		  <div >
-              <P class="logo">PyMS - {{appname}} - Server Status &nbsp CPU <strong id="123-cpu">awaiting-data</strong>&deg;C</P>
-              <p class="breadcrumbtext"><a href = "/" class="breadcrumblink">Return to index</a> &nbsp|&nbsp
-              <a href = "/pylog" class="breadcrumblink">Application Log</a> &nbsp|&nbsp
-              <a href = "/guaccesslog" class="breadcrumblink">Website Access Log</a> &nbsp|&nbsp
-              <a href = "/guerrorlog" class="breadcrumblink">Website Error Log</a> &nbsp|&nbsp
-              <a href = "/syslog" class="breadcrumblink">System Log</a></p><br>
-          </div>
-  </section>
-<section class="container2">
-    <p class="sectiontext"> Laser Status</p>
-      <table>
-         <thead>
-            <td class="tabledataleft"><B>Description</B></td>
-            <td class="tabledataleft"><B>Status</B></td>
-         </thead>
-            <tr>
-                    <td class="tabledataleft">Laser Enabled</td>
-                    <td class="tabledataleft" id="123-laserenabled">awaiting-data</td>
-            </tr>
-            <tr>
-                    <td class="tabledataleft">Laser Active</td>
-                    <td class="tabledataleft" id="123-laser">awaiting-data</td>
-            </tr>
-             <tr>
-                    <td class="tabledataleft">Laser Power (%)</td>
-                    <td class="tabledataleft" id="123-power">awaiting-data</td>
-            </tr>
-             <tr>
-                    <td class="tabledataleft">Laser PWM Frequency (Hz)</td>
-                    <td class="tabledataleft" id="123-frequency">awaiting-data</td>
-            </tr>
-           <tr>
-                    <td class="tabledataleft">Laser Timeout (s)</td>
-                    <td class="tabledataleft" id="123-autooff">awaiting-data</td>
-            </tr>
-            <tr>
-                    <td class="tabledataleft">Laser Door Interlock</td>
-                    <td class="tabledataleft" id="123-door">awaiting-data</td>
-            </tr>
-            <tr>
-                    <td class="tabledataleft">Laser Key Switch</td>
-                    <td class="tabledataleft" id="123-keyswitch">awaiting-data</td>
-            </tr>
-            <tr>
-                    <td class="tabledataleft">Pyro Current Temperature (&deg;C)</td>
-                    <td class="tabledataleft" id="123-temp">awaiting-data</td>
-            </tr>
-            <tr>
-                    <td class="tabledataleft">Pyro Max Temperature (&deg;C)</td>
-                    <td class="tabledataleft" id="123-maxtemp">awaiting-data</td>
-            </tr>
-            <tr>
-                    <td class="tabledataleft">Pyro Average Temperature (&deg;C)</td>
-                    <td class="tabledataleft" id="123-average-temp">awaiting-data</td>
-            </tr>
-            <tr>
-                    <td class="tabledataleft">Pyro Average Max Temperature (&deg;C)</td>
-                    <td class="tabledataleft" id="123-average-max-temp">awaiting-data</td>
-            </tr>
-            <tr>
-                    <td class="tabledataleft">Pyro Range Laser</td>
-                    <td class="tabledataleft" id="123-pyrolaser">awaiting-data</td>
-            </tr>
-         {% for thread in threads %}
-             <tr>
+    <script>
+        setInterval(getstatusdata, 1000);
+
+        async function getstatusdata() {
+            const response = await fetch("/statusdata");
+            const statusdata = await response.json();
+            var idtoupdate = document.getElementById('cpu-value');
+            idtoupdate.innerHTML = statusdata.cputemperature;
+            {% for ditem in digital_status['values'] %}{% if digital_status['values'][ditem]['enabled'] %}
+            var idtoupdate = document.getElementById('d{{ditem}}-value');
+            idtoupdate.innerHTML = statusdata.digital_status.values.{{ditem}}.value;
+            {% endif %}{% endfor %}
+            {% for aitem in analogue_status['values'] %}{% if analogue_status['values'][aitem]['enabled'] %}
+            var idtoupdate = document.getElementById('a{{aitem}}-value');
+            idtoupdate.innerHTML = statusdata.analogue_status.values.{{aitem}}.value.toFixed(3);
+            {% endif %}{% endfor %}
+            {% for sitem in serial_status['values'] %}
+            var idtoupdate = document.getElementById('s{{sitem}}-value');
+            idtoupdate.innerHTML = statusdata.serial_status.values.{{sitem}}.value;
+            var idtoupdate = document.getElementById('s{{sitem}}-port');
+            idtoupdate.innerHTML = statusdata.serial_status.values.{{sitem}}.portstatus;
+            {% endfor %}
+        }
+    </script>
+
+    <section class="banner">
+        <div>
+            <p class="logo">{{settings['app-name']}} - System Status &nbsp; CPU <strong id="cpu-value">awaiting-data</strong>&deg;C</p>
+            <p class="breadcrumbtext">
+                <a href="/" class="breadcrumblink">Return to index</a> &nbsp;|&nbsp;
+                <a href="/pylog" class="breadcrumblink">Application Log</a> &nbsp;|&nbsp;
+                <a href="/guaccesslog" class="breadcrumblink">Website Access Log</a> &nbsp;|&nbsp;
+                <a href="/guerrorlog" class="breadcrumblink">Website Error Log</a> &nbsp;|&nbsp;
+                <a href="/syslog" class="breadcrumblink">System Log</a> &nbsp;|&nbsp;
+                <a href="/config" class="breadcrumblink">System Config</a>
+            </p><br>
+        </div>
+    </section>
+
+    <section class="container2">
+        <p class="sectiontext">Controller Status</p>
+        <table>
+            <thead>
+                <tr>
+                    <th class="tabledataleft">Channel</th>
+                    <th class="tabledataleft">Description</th>
+                    <th class="tabledataleft">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in digital_status['values'] %}
+                {% if digital_status['values'][item]['enabled'] %}
+                <tr>
+                    <td class="tabledataleft">{{item}}</td>
+                    <td class="tabledataleft">{{digital_status['values'][item]['name']}}, ({{digital_status['values'][item]['direction']}})</td>
+                    <td class="tabledataleft" id="d{{item}}-value" >Awaiting Data</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% for item in analogue_status['values'] %}
+                {% if analogue_status['values'][item]['enabled'] %}
+                <tr>
+                    <td class="tabledataleft">{{item}}</td>
+                    <td class="tabledataleft">{{analogue_status['values'][item]['name']}}</td>
+                    <td class="tabledataleft" id="a{{item}}-value" >Awaiting Data</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% for item in serial_status['values'] %}
+                <tr>
+                    <td class="tabledataleft" id="s{{item}}-port">{{serial_status['values'][item]['name']}} Not Connected</td>
+                    <td class="tabledataleft">{{serial_status['values'][item]['name']}}</td>
+                    <td class="tabledataleft" id="s{{item}}-value">Awaiting Data</td>
+                </tr>
+                {% endfor %}
+                {% for thread in threads %}
+                <tr>
+                    <td class="tabledataleft">Thread</td>
                     <td class="tabledataleft">{{thread[0]}}</td>
                     <td class="tabledataleft">{{thread[1]}}</td>
-
                 </tr>
-         {% endfor %}
-      </table>
-    <p>&nbsp</p>
-    <table>
-        <thead>
-            <td class="tabledataleft"><a href = "/VideoFeed0">Camera 0</a></td>
-            <td class="tabledataleft"><a href = "/VideoFeed1">Camera 1</a></td>
-         </thead>
-        <tr>
-            <td class="tableimage" ><img src="{{ url_for('video_feed0') }}" alt=" Webcam feed camera 0"></td>
-            <td class="tableimage" ><img src="{{ url_for('video_feed1') }}" alt=" Webcam feed camera 1"></td>
-        </tr>
-      </table>
-    <p>&nbsp</p>
-	</section>
-  <section class="banner">
- <div class ="copyright"><strong>Software Version</strong> {{version}}<br>&copy;2025 - <strong>Gary Twinn</strong></div>
-	  </section>
+                {% endfor %}
+            </tbody>
+        </table>
+            <p>&nbsp</p>
+        <table>
+            <thead>
+                <td class="tabledataleft"><a href = "/VideoFeed0">Camera 0</a></td>
+                <td class="tabledataleft"><a href = "/VideoFeed1">Camera 1</a></td>
+            </thead>
+            <tr>
+                <td class="tableimage" ><img src="{{ url_for('video_feed0') }}" alt=" Webcam feed camera 0"></td>
+                <td class="tableimage" ><img src="{{ url_for('video_feed1') }}" alt=" Webcam feed camera 1"></td>
+            </tr>
+        </table>
+        <p>&nbsp;</p>
+        <p class="bodytext">For more information please review the software description: <a href="/documentation">{{settings['app-name']}}.pdf</a>.</p>
+    </section>
+
+    <section class="banner">
+        <p class="copyright">
+            <strong>Software Version</strong> {{version}}<br>
+            &copy;{{year}} - <strong>TS Technologies</strong>
+        </p>
+
+    </section>
 </body>
 </html>

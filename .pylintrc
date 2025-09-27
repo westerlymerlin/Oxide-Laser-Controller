@@ -289,7 +289,7 @@ max-args=10
 max-positional-arguments=10
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes=20
+max-attributes=30
 
 # Maximum number of boolean expressions in an if statement (see R0916).
 max-bool-expr=5
@@ -310,7 +310,7 @@ max-public-methods=20
 max-returns=20
 
 # Maximum number of statements in function / method body.
-max-statements=50
+max-statements=100
 
 # Minimum number of public methods for a class (see R0903).
 min-public-methods=2
