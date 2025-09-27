@@ -13,23 +13,50 @@
 
 body {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 12pt;
+	font-size: 11pt;
 	background-color: #f2f2f2;
+    color: #202020;
 	margin: 10px;
 	font-style: normal;
 	font-weight: 200;
 }
 .gentext {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 12pt;
+	font-size: 11pt;
+    color: #202020;
 	margin: 0;
 	font-style: normal;
 	font-weight: 200;
 }
+.gentext-red {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11pt;
+	color: #c70000;
+	margin: 0;
+	font-style: normal;
+	font-weight: 200;
+}
+.bodytext {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11pt;
+    color: #202020;
+    margin: 12px;
+    font-style: normal;
+    font-weight: 400;
+}
+.bodytext-red {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11pt;
+    color: #c70000;
+    margin: 12px;
+    font-style: normal;
+    font-weight: 400;
+}
 .sectiontext {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 14pt;
-	margin: 14px;
+    color: #202020;
+	margin: 12px;
 	font-style: normal;
 	font-weight:600;
 }
@@ -82,7 +109,7 @@ body {
 }
 /* table Section */
 table {
-	color: #101010;
+	color: #202020;
 	text-align: left;
 	border-collapse: collapse;
 	border-style: solid;
@@ -97,7 +124,7 @@ table {
 .tabledata {
 	text-align: right;
 	padding-left: 25px;
-	color: #101010;
+	color: #202020;
 	border-collapse: collapse;
 	border-style: solid;
 	border-width: 2px;
@@ -109,7 +136,7 @@ table {
 }
 .tabledataleft {
 	padding-right: 35px;
-	color: #101010;
+	color: #202020;
 	border-collapse: collapse;
 	border-style: solid;
 	border-width: 2px;
@@ -119,9 +146,31 @@ table {
 	padding-left: 5px;
 	margin: 1px 10px;
 }
+.tabledatagrey {
+	padding-right: 35px;
+	color: #202020;
+    background-color: #d8d8d8;
+	border-collapse: collapse;
+	border-style: solid;
+	border-width: 2px;
+	border-color: #2D9AB7;
+	vertical-align:top;
+	min-height: 10px;
+	padding-left: 5px;
+	margin: 1px 10px;
+}
+.redtext{
+	color: #c70000;
+	font-size: smaller ;
+}
+.blackmonospace{
+    font-family: "Consolas, Courier New", Courier, monospace;
+    font-weight: bold;
+	color: #202020;
+}
 .tableimage {
 	padding-right: 0px;
-	color: #101010;
+	color: #202020;
 	border-collapse: collapse;
 	border-style: solid;
 	border-width: 2px;
@@ -133,7 +182,7 @@ table {
 }
 .logerror {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 10pt;
+	font-size: 9pt;
 	font-weight: bolder;
 	width: 100%;
 	margin-left: auto;
@@ -142,7 +191,7 @@ table {
 }
 .logwarning {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 10pt;
+	font-size: 9pt;
 	font-weight: bolder;
 	width: 100%;
 	margin-left: auto;
@@ -151,7 +200,7 @@ table {
 }
 .loginfo {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 10pt;
+	font-size: 9pt;
 	width: 100%;
 	margin-left: auto;
 	margin-right: auto;

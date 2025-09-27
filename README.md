@@ -1,65 +1,103 @@
-# Oxide Laser Controller Service
+# TST Base Controller Service
 
-A Python application for controlling a LaserTree K60 Laser and micro-epsilon infrared pyrometer systems via HTTP API.
+A Flask-based web application for Raspberry Pi that provides system monitoring, equipment control, and a RESTful API interface for scientific equipment management.
 
-## Overview
+## Features
 
-This project provides a Flask-based API for precise control of laser and temperature measurement equipment used in oxide research. The system uses CH-340 USB to RS232 adapters for communication with the hardware devices.
+- **Web Interface**: Browser-based dashboard for system monitoring and configuration
+- **RESTfull API**: JSON-based API with authentication for programmatic control
+- **System Monitoring**: Real-time CPU temperature, thread monitoring, and system status
+- **Equipment Control**: Digital and analogue device control via GPIO
+- **OLED Display**: Shows system information including network address and software version
+- **Log Management**: Comprehensive logging with web-based log viewers
+- **Configuration Management**: Web-based configuration interface for system settings
 
 ## Documentation
-
-- **Setup Instructions**: Detailed setup information is available in [manual.pdf](./manual.pdf)
-- **API Reference**: Python module documentation in the [docs](./docs/readme.md) folder
-- **Change Log**: View version history in [changelog.txt](./changelog.txt)
-
-## System Architecture
-
-The main application entry point is `app.py`, which implements the Flask application that manages the HTTP API.
-
-## API Reference
-
-The system accepts JSON commands via its HTTP interface:
-
-| Command                | Format                     | Description                                                    |
-|------------------------|----------------------------|----------------------------------------------------------------|
-| Laser Control          | `{"laser": "off"}`         | Switch off the laser                                           |
-|                        | `{"laser": "on"}`          | Switch on the laser                                            |
-|                        | `{"setlaserpower": nn.n}`  | Set laser power to nn.n%                                       |
-|                        | `{"laserstatus": 1}`       | Read laser status (returns power and firing state)             |
-|                        | `{"setlasertimeout": nnn}` | Change maximum laser firing time to nnn seconds (default: 300) |
-| Temperature Monitoring | `{"gettemperature": 1}`    | Return pyrometer temperature and maximum attained temperature  |
-|                        | `{"resetmax": 1}`          | Reset the maximum pyrometer temperature reading                |
-| Rangefinder Control    | `{"pyrolaser": "off"}`     | Switch off the rangefinder laser                               |
-|                        | `{"pyrolaser": "on"}`      | Switch on the rangefinder laser                                |
-| System Control         | `{"restart": "pi"}`        | Restart the Raspberry Pi after a 15 second delay               |
+- **User Manual**: [manual.pdf](./manual.pdf)
+- **API Documentation**: [docs/readme.md](./docs/readme.md)
+- **Change Log**: [changelog.txt](./changelog.txt)
 
 
-&nbsp;   
-&nbsp;    
-&nbsp;  
-&nbsp;   
-&nbsp;   
-&nbsp;   
---------------
+### API Endpoints
 
-#### Copyright (C) 2025 Gary Twinn
-
-This program is free software: you can redistribute it and/or modify  
-it under the terms of the GNU General Public License as published by  
-the Free Software Foundation, either version 3 of the License, or  
-(at your option) any later version.  
-
-This program is distributed in the hope that it will be useful,  
-but WITHOUT ANY WARRANTY; without even the implied warranty of  
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the  
-GNU General Public License for more details.  
-
-You should have received a copy of the GNU General Public License  
-along with this program. If not, see <https://www.gnu.org/licenses/>.
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api` | POST | Main API endpoint for equipment control |
 
 
-Author:  Gary Twinn  
-Repository:  [github.com/westerlymerlin](https://github)
 
--------------
+### API Commands
+
+Send JSON payloads with the following structure:
+```
+json { "item": "command_type", "command": "command_parameters" }
+```
+
+### Example Commands
+
+
+#### Read Digital Channels:
+``` 
+json {
+  "item": "digitalstatus",
+  "command": false
+}
+```
+#### Read Analogue Channels:
+```
+json {
+  "item": "analoguestatus", 
+  "command": false
+}
+```
+## Configuration
+The application supports web-based configuration for:
+- Network settings
+- OLED display settings
+- Digital device settings
+- Analogue device settings
+- Log levels
+- Application hostname
+
+### Project Structure
+``` 
+├── app.py              # Main Flask application
+├── app_control.py      # Application control logic
+├── api_parser.py       # API command parsing
+├── digital_class.py    # Digital GPIO control
+├── analogue_class.py   # Analogue device control
+├── oled_class.py       # OLED display management
+├── logmanager.py       # Logging configuration
+├── config_class.py     # Configuration management
+├── templates/          # HTML templates
+├── static/             # CSS, JS, and static assets
+├── docs/               # Additional documentation
+└── raspberry-pi/       # Raspberry Pi specific files
+```
+
+
+## Monitoring
+The system provides comprehensive monitoring including:
+- CPU temperature monitoring
+- Active thread tracking
+- Real-time status updates via JavaScript
+- Multiple log file access (Application, Gunicorn, System)
+
+## License
+Copyright (C) 2025 Gary Twinn
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with this program. If not, see [https://www.gnu.org/licenses/](https://www.gnu.org/licenses/).
+
+## Author
+**Dr Gary Twinn**  
+GitHub: [github.com/westerlymerlin](https://github.com/westerlymerlin)
+
 

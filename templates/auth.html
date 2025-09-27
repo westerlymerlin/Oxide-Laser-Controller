@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{settings['app-name']}} logs</title>
+    <title>{{settings['app-name']}} Authentication Request</title>
     <link href="{{ url_for('static',filename='css/text.css') }}" rel="stylesheet" type="text/css">
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 </head>
@@ -21,7 +21,7 @@
     </script>
     <section class="banner">
         <div>
-            <p class="logo">{{settings['app-name']}} - {{log}} &nbsp CPU <strong id="cpu-status">awaiting-data</strong>&deg;C</p>
+            <p class="logo">{{settings['app-name']}} - Authentication &nbsp CPU <strong id="cpu-status">awaiting-data</strong>&deg;C</p>
             <p class="breadcrumbtext">
                 <a href="/" class="breadcrumblink">Return to index</a> &nbsp|&nbsp
                 <a href="/pylog" class="breadcrumblink">Application Log</a> &nbsp|&nbsp
@@ -33,13 +33,25 @@
         </div>
     </section>
     <section class="container2">
-        <p class="sectiontext">{{log}}</p>
-        <p class="tabledataleft">
-            {% for row in rows %}
-                <slot {% if 'ERROR' in row %} class="logerror" {% elif 'WARN' in row %} class="logwarning" {% else %} class="loginfo" {% endif %}>{{row}}</slot><br>
-            {% endfor %}
-            &nbsp
-        </p>
+        <p class="sectiontext">Authentication Required</p>
+        <p class="bodytext">Please enter the raspberry pi linux account in order to access the configuration page<br>&nbsp;</p>
+        <form method="post" action="">
+        <table>
+            <tr class="tabledataleft">
+                <td class="tabledataleft">Username</td>
+                <td class="tabledataleft"><input class="gentext" type="text" name="username" value="{{username}}"></td>
+            </tr>
+            <tr class="tabledataleft">
+                <td class="tabledataleft">Password</td>
+                <td class="tabledataleft"><input class="gentext" type="password" name="password" value=""> {%if loginfailed %}<span class="redtext">invalid password, please try again</span>{% endif %}</td>
+            </tr>
+            <tr class="tabledataleft">
+                <td class="tabledataleft">&nbsp;</td>
+                <td class="tabledataleft"><input class="gentext" type="submit" name="submit" value="Login"></td>
+            </tr>
+        </table>
+        </form>
+    <p>&nbsp;</p>
     </section>
     <section class="banner">
         <div class="copyright"><strong>Software Version</strong> {{version}}<br>&copy;{{year}} - <strong>TS Technologies</strong></div>

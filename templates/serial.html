@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{settings['app-name']}} - Serial Port {{port}} Config</title>
+    <link href="{{ url_for('static', filename='css/text.css') }}" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+</head>
+<body onload="getstatusdata()">
+    <script>
+        setInterval(getstatusdata, 1000);
+
+        async function getstatusdata() {
+            const response = await fetch("/statusdata");
+            const statusdata = await response.json();
+            var idtoupdate = document.getElementById('cpu-status');
+            idtoupdate.innerHTML = statusdata.cputemperature;
+        }
+    </script>
+
+    <section class="banner">
+        <div>
+            <p class="logo">{{settings['app-name']}} - Serial Port Configuration {{port}}&nbsp; CPU <strong id="cpu-status">awaiting-data</strong>&deg;C</p>
+            <p class="breadcrumbtext">
+                <a href="/" class="breadcrumblink">Return to index</a> &nbsp;|&nbsp;
+                <a href="/pylog" class="breadcrumblink">Application Log</a> &nbsp;|&nbsp;
+                <a href="/guaccesslog" class="breadcrumblink">Website Access Log</a> &nbsp;|&nbsp;
+                <a href="/guerrorlog" class="breadcrumblink">Website Error Log</a> &nbsp;|&nbsp;
+                <a href="/syslog" class="breadcrumblink">System Log</a> &nbsp;|&nbsp;
+                <a href="/config" class="breadcrumblink">System Config</a>
+            </p>
+        </div>
+    </section>
+
+    <section class="container2">
+        <p class="sectiontext">Serial Port {{port}}<span class="redtext"><br> Note: Please be careful making settings changes as it may affect the way the controller works with your equipment.<br>
+            If in doubt please refer to the user manual first. Changing settings will cause the controller to restart.</span></p>
+
+        <p class="sectiontext">General Configuration</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="tabledataleft">Setting</th>
+                    <th class="tabledataleft">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <form method="post" action="/serial?port={{port}}" name="serialsettings">
+                    <input type="hidden" name="form-name" value="comsettings">
+                    <input type="hidden" name="port" value="{{port}}">
+                    <tr class="tabledataleft">
+                        <td class="tabledataleft">API Name</td>
+                        <td class="tabledataleft"><input class="gentext" type="text" name="api-name" value="{{serial_port['api-name']}}"><br>
+                        <span class="redtext">This is the name called via the api to retrieve data from the serial port, it should be lowercase with no spaces.<br>
+                            Current comand would be <span class="blackmonospace">{"item": "{{serial_port['api-name']}}status", "command": true}</span></span>
+                        </td>
+                    </tr>
+                    <tr class="tabledataleft">
+                        <td class="tabledataleft">Port Speed</td>
+                        <td class="tabledataleft">
+                            <select class="gentext" name="baud">
+                                <option value="1200" {% if serial_port['baud'] == 1200 %} selected="selected" {% endif %}>1200</option>
+                                <option value="9600" {% if serial_port['baud'] == 9600 %} selected="selected" {% endif %}>9600</option>
+                                <option value="19200" {% if serial_port['baud'] == 19200 %} selected="selected" {% endif %}>19200</option>
+                                <option value="28800" {% if serial_port['baud'] == 28800 %} selected="selected" {% endif %}>28800</option>
+                                <option value="38400" {% if serial_port['baud'] == 38400 %} selected="selected" {% endif %}>38400</option>
+                                <option value="57600" {% if serial_port['baud'] == 57600 %} selected="selected" {% endif %}>57600</option>
+                                <option value="115200" {% if serial_port['baud'] == 115200 %} selected="selected" {% endif %}>115200</option>
+                            </select> Baud
+                        </td>
+                    </tr>
+                    <tr class="tabledataleft">
+                        <td class="tabledataleft">Port Mode</td>
+                        <td class="tabledataleft">
+                            <select class="gentext" name="mode">
+                                <option value="listener" {% if serial_port['mode'] == 'listener' %} selected="selected" {% endif %}>listener</option>
+                                <option value="interactive" {% if serial_port['mode'] == 'interactive' %} selected="selected" {% endif %}>interactive</option>
+                            </select>
+                            &nbsp; <span class="redtext"><br>Listener mode will not send any data to the external device, only listen for data on the bus.<br>
+                            Interactive mode will send data to the device and then receive it from the serial port.</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tabledataleft">Polling Rate</td>
+                        <td class="tabledataleft"><input type="number" class="gentext" name="poll_interval" value="{{serial_port['poll_interval']}}"> seconds</td>
+                    </tr>
+                    <tr>
+                        <td class="tabledataleft"><input type="submit" value="update {{port}}"></td>
+                    </tr>
+                </form>
+            </tbody>
+        </table>
+        {% if serial_port['configured'] %}
+        <p>&nbsp;</p>
+        <p class="sectiontext">Data Messages{% if serial_port['mode'] == 'interactive' %}<span class="gentext-red"><br>leave api-comamand blank for regular data reads using the above interval (e.g. a temperature reading)<br>or specify an api-command for commands you need to send to the device (e.g. to switch a device on or off)</span>{% endif %}</p>
+        <table>
+            <thead>
+                <tr>
+                    <th class="tabledataleft">Name</th>
+                    {% if serial_port['mode'] == 'interactive' %}<th class="tabledataleft">API-Command<span class="redtext"><br>(optional)</span></th>{% endif %}
+                    <th class="tabledataleft">{% if serial_port['mode'] == 'interactive' %}TX String 1{% else %}Search String{% endif %}<span class="redtext"><br>enclose in b'  ' as this is a binary value</span></th>
+                    {% if serial_port['mode'] == 'interactive' %}<th class="tabledataleft">TX String 2<span class="redtext"><br>(optional)</span></th>{% endif %}
+                    <th class="tabledataleft">Data Start Position</th>
+                    <th class="tabledataleft">Data length</th>
+                    <th class="tabledataleft">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for message in serial_port['messages'] %}
+                <tr class="tabledataleft">
+                    <form method="post" action="/serial?port={{port}}" name="messageupdate">
+                        <input type="hidden" name="form-name" value="messageupdate">
+                        <input type="hidden" name="port" value="{{port}}">
+                        <input type="hidden" name="name" value="{{message['name']}}">
+                        <td class="tabledataleft">{{message['name']}}</td>
+                        {% if serial_port['mode'] == 'interactive' %}
+                        <td class="tabledataleft"><input autocapitalize="off" class="gentext" type="text" name="api-command" value="{{message['api-command']}}"></td>
+                        {% else %}
+                        <input type="hidden" name="api-command" value="">
+                        {% endif %}
+                        <td class="tabledataleft"><input class="gentext" type="text" name="string1" value="{{message['string1']}}"></td>
+                        {% if serial_port['mode'] == 'interactive' %}
+                        <td class="tabledataleft"><input class="gentext" type="text" name="string2" value="{{message['string2']}}"></td>
+                        {% else %}
+                        <input type="hidden" name="string2" value="">
+                        {% endif %}
+                        <td class="tabledataleft"><input class="gentext" type="number" name="start" value="{{message['start']}}"></td>
+                        <td class="tabledataleft"><input class="gentext" type="number" name="length" value="{{message['length']}}"></td>
+                        <td class="tabledataleft">
+                            <input type="submit" value="save">
+                    </form>
+                    &nbsp;
+                    <form method="post" action="/serial?port={{port}}" name="messagedelete">
+                        <input type="hidden" name="form-name" value="messagedelete">
+                        <input type="hidden" name="port" value="{{port}}">
+                        <input type="hidden" name="name" value="{{message['name']}}">
+                        <input type="submit" value="delete">
+                    </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                <tr class="tabledataleft">
+                    <form method="post" action="/serial?port={{port}}" name="messageupdate">
+                        <input type="hidden" name="form-name" value="messageupdate">
+                        <input type="hidden" name="port" value="{{port}}">
+                        <td class="tabledataleft"><input class="gentext" type="text" name="name" value=""></td>
+                        {% if serial_port['mode'] == 'interactive' %}
+                        <td class="tabledataleft"><input autocapitalize="off" class="gentext" type="text" name="api-command" value=""></td>
+                        {% else %}
+                        <input type="hidden" name="api-command" value="">
+                        {% endif %}
+                        <td class="tabledataleft"><input class="gentext" type="text" name="string1" value="b''"></td>
+                        {% if serial_port['mode'] == 'interactive' %}
+                        <td class="tabledataleft"><input class="gentext" type="text" name="string2" value="b''"></td>
+                        {% else %}
+                        <input type="hidden" name="string2" value="">
+                        {% endif %}
+                        <td class="tabledataleft"><input class="gentext" type="number" name="start" value=0></td>
+                        <td class="tabledataleft"><input class="gentext" type="number" name="length" value=0></td>
+                        <td class="tabledataleft"><input type="submit" value="add"></td>
+                    </form>
+                </tr>
+            </tbody>
+        </table>
+        {% else %}
+        <p class="gentext"><br>&nbsp;Serial Port {{port}} has not been configured yet, please set the api-name, speed and mode in order to add messages to read.</p>
+        {% endif %}
+        <p>&nbsp;</p>
+        <p><a class="gentext" href="/config">Return to configuration page</a></p>
+    </section>
+
+    <section class="banner">
+        <div class="copyright">
+            <strong>Software Version</strong> {{version}}<br>
+            &copy;{{year}} - <strong>TS Technologies</strong>
+        </div>
+    </section>
+</body>
+</html>

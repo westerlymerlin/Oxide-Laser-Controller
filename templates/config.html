@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{settings['app-name']}} - configuration</title>
+    <link href="{{ url_for('static', filename='css/text.css') }}" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+</head>
+<body onload="getstatusdata()">
+    <script>
+        setInterval(getstatusdata, 1000);
+
+        async function getstatusdata() {
+            const response = await fetch("/statusdata");
+            const statusdata = await response.json();
+            var idtoupdate = document.getElementById('cpu-status');
+            idtoupdate.innerHTML = statusdata.cputemperature;
+        }
+    </script>
+
+    <section class="banner">
+        <div>
+            <p class="logo">{{settings['app-name']}} - System Configuration &nbsp; CPU <strong id="cpu-status">awaiting-data</strong>&deg;C</p>
+            <p class="breadcrumbtext">
+                <a href="/" class="breadcrumblink">Return to index</a> &nbsp;|&nbsp;
+                <a href="/pylog" class="breadcrumblink">Application Log</a> &nbsp;|&nbsp;
+                <a href="/guaccesslog" class="breadcrumblink">Website Access Log</a> &nbsp;|&nbsp;
+                <a href="/guerrorlog" class="breadcrumblink">Website Error Log</a> &nbsp;|&nbsp;
+                <a href="/syslog" class="breadcrumblink">System Log</a> &nbsp;|&nbsp;
+                <a href="/config" class="breadcrumblink">System Config</a>
+            </p>
+        </div>
+    </section>
+
+    <section class="container2">
+        <p class="sectiontext">Configuring Controller<span class="bodytext-red"><br> Note: Please be careful making settings changes as it may affect the way the controller works with your equipment.<br>
+            If in doubt please refer to the software description: <a href="/documentation">{{settings['app-name']}}.pdf</a>. Changing settings will cause the controller to restart.</span></p>
+        <p>&nbsp;</p>
+        <p class="sectiontext">API Key<span class="bodytext"><br>Copy this key into your application in order to authenticate against the api endpoint.</span></p>
+        <table>
+            <tr class="tabledataleft">
+                <td class="tabledataleft">API Key</td>
+                <td class="tabledataleft"><span class="blackmonospace">{{apikey}}</span> </td>
+            </tr>
+        </table>
+
+        <p class="sectiontext"><br>System Configuration</p>
+        <table>
+            <thead>
+                <tr>
+                    <th class="tabledataleft">Setting</th>
+                    <th class="tabledataleft">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="tabledataleft">Controller Name</td>
+                    <td class="tabledataleft">
+                        <form method="post" action="/config" name="app-name">
+                            <input type="hidden" name="form-name" value='hostname'>
+                            <input class="gentext" type="text" name="app-name" value="{{settings['app-name']}}"> &nbsp;
+                            <input type="submit" value="Change Host Name">
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tabledataleft">OLED display enabled</td>
+                    <td class="tabledataleft">
+                        <form method="post" action="/config" name="app-name">
+                            <input type="hidden" name="form-name" value='oled'>
+                            <input class="gentext" type="checkbox" name="oled-enabled" {% if settings['oled_enabled'] %} checked="checked" {% endif %}>&nbsp;
+                            <input type="submit" value="Change OLED">
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tabledataleft">Logging Level</td>
+                    <td class="tabledataleft">
+                        <form method="post" action="/config" name="app-name">
+                            <input type="hidden" name="form-name" value='loglevel'>
+                            <input class="gentext" type="radio" name="loglevel" value="INFO" {% if settings['loglevel'] == "INFO" %} checked="checked" {% endif %}>INFO &nbsp;
+                            <input class="gentext" type="radio" name="loglevel" value="DEBUG" {% if settings['loglevel'] == "DEBUG" %} checked="checked" {% endif %}>DEBUG &nbsp;
+                            <input type="submit" value="Change Logging">
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="sectiontext"><br>Network Settings</p>
+        <table>
+            <thead>
+                <tr>
+                    <th class="tabledataleft">Setting</th>
+                    <th class="tabledataleft">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <form method="post" action="/config" name="netsettings">
+                    <input type="hidden" name="form-name" value='netsettings'>
+                <tr>
+                    <td class="tabledataleft">Network Address Configuration</td>
+                    <td class="tabledataleft">
+                        <input class="gentext" type="radio" name="ipv4.method" value="auto" {% if netinfo['ipv4.method'] == "auto" %} checked="checked" {% endif %}>DHCP &nbsp;
+                        <input class="gentext" type="radio" name="ipv4.method" value="manual" {% if netinfo['ipv4.method'] == "manual" %} checked="checked" {% endif %}>Static<br>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tabledataleft">MAC Address</td>
+                    <td class="tabledataleft">{{netinfo['GENERAL.HWADDR']}}</td>
+                </tr>
+                <tr>
+                    <td class="tabledataleft">IP Address / Class</td>
+                    <td class="tabledataleft">
+                        <input class="gentext" size=15 type="text" name="IP4.ADDRESS" value="{{netinfo['IP4.ADDRESS[1]'].split('/')[0]}}"> /
+                        <input class="gentext" size=2  minlength="2" maxlength="2" type="text" name="IP4.SUBNET" value="{{netinfo['IP4.ADDRESS[1]'].split('/')[1]}}">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tabledataleft">Default Gateway</td>
+                    <td class="tabledataleft"><input class="gentext" size=15 type="text" name="IP4.GATEWAY" value="{{netinfo['IP4.GATEWAY']}}"></td>
+                </tr>
+                <tr>
+                    <td class="tabledataleft">Domain Name Server</td>
+                    <td class="tabledataleft"><input class="gentext" size=15 type="text" name="IP4.DNS" value="{{netinfo['IP4.DNS[1]']}}"></td>
+                </tr>
+                 <tr>
+                     <td class="tabledataleft">&nbsp;</td>
+                     <td class="tabledataleft"><input type="submit" value="Change Network Settings"></td>
+                 </tr>
+                </form>
+            </tbody>
+        </table>
+        <p class="sectiontext"><br>Digital Channels</p>
+        <form method="post" action="/config" name="digitalsettings">
+            <input type="hidden" name="form-name" value='digitalsettings'>
+            <table>
+                <tr>
+                    <td class="tabledataleft">JSON Channel Prefix <span class="redtext">(used in commands to specify a digital channel, comand would be <span class="blackmonospace">{"item": "{{settings['digital_prefix']}}status", "command": true}</span>)</span></td>
+                    <td class="tabledataleft"><input class="gentext" type="text" name="digital_prefix" value="{{settings['digital_prefix']}}"></td>
+                </tr>
+                <tr>
+                    <td class="tabledataleft">JSON on value <span class="redtext">(the value returned if the channel is on from the command,  returned data would be <span class="blackmonospace">{"{{settings['digital_prefix']}}1": "{{settings['digital_on_value']}}"}</span>)</span></td>
+                    <td class="tabledataleft"><input class="gentext" type="text" name="digital_on_value" value="{{settings['digital_on_value']}}"></td>
+                </tr>
+                <tr>
+                    <td class="tabledataleft">JSON on command <span class="redtext">(the the command sent to switch a channel on, command would be <span class="blackmonospace">{"item": "{{settings['digital_prefix']}}1", "command": "{{settings['digital_on_command']}}"}</span>)</span></td>
+                    <td class="tabledataleft"><input class="gentext" type="text" name="digital_on_command" value="{{settings['digital_on_command']}}"></td>
+                </tr>
+                <tr>
+                    <td class="tabledataleft">JSON off value <span class="redtext">(the value returned if the channel is off, returned data would be <span class="blackmonospace">{"{{settings['digital_prefix']}}1": "{{settings['digital_off_value']}}"}</span>)</span></td>
+                    <td class="tabledataleft"><input class="gentext" type="text" name="digital_off_value" value="{{settings['digital_off_value']}}"></td>
+                </tr>
+                <tr>
+                    <td class="tabledataleft">JSON off command <span class="redtext">(the the command sent to switch a channel off, command would be <span class="blackmonospace">{"item": "{{settings['digital_prefix']}}1", "command": "{{settings['digital_off_command']}}"}</span>)</span></td>
+                    <td class="tabledataleft"><input class="gentext" type="text" name="digital_off_command" value="{{settings['digital_off_command']}}"></td>
+                </tr>
+            </table>
+            <br>
+        <table>
+            <thead>
+                <tr>
+                    <th class="tabledataleft">Channel</th>
+                    <th class="tabledataleft">Description</th>
+                    <th class="tabledataleft">Direction</th>
+                    <th class="tabledataleft">Excluded</th>
+                    <th class="tabledataleft">Enabled</th>
+                    <th class="tabledataleft">PWM Duty Cycle</th>
+                    <th class="tabledataleft">PWM Frequency</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                    {% for chl in range(1,17) %}
+                    <tr>
+                        <td class="tabledataleft">{{settings['digital_prefix']}}{{chl}}</td>
+                        <td class="tabledataleft"><input class="gentext" type="text" name="ch{{chl}}-name" value="{{settings['digital_channels']['{0:d}'.format(chl)]['name']}}"></td>
+                        <td class="tabledataleft">
+                            <select class="gentext" name="ch{{chl}}-direction">
+                                <option value="input" {% if settings['digital_channels']['{0:d}'.format(chl)]['direction'] == "input" %} selected="selected" {% endif %}>Digital Input</option>
+                                <option value="output" {% if settings['digital_channels']['{0:d}'.format(chl)]['direction'] == "output" %} selected="selected" {% endif %}>Digital Output</option>
+                                <option value="output pwm" {% if settings['digital_channels']['{0:d}'.format(chl)]['direction'] == "output pwm" %} selected="selected" {% endif %}>PWM Output</option>
+                            </select>
+                        </td>
+                        <td class="tabledataleft">
+                            <select class="gentext" name="ch{{chl}}-excluded">
+                                <option value="0" {% if settings['digital_channels']['{0:d}'.format(chl)]['excluded'] == "0" %} selected="selected" {% endif %}>None</option>
+                                {% for i in range(1,17) %}
+                                {% if i != chl %}
+                                <option value="{{i}}" {% if settings['digital_channels']['{0:d}'.format(chl)]['excluded'] == '{0:d}'.format(i) %} selected="selected" {% endif %}>{{i}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td class="tabledataleft"><input class="gentext" type="checkbox" name="ch{{chl}}-enabled" {% if settings['digital_channels']['{0:d}'.format(chl)]['enabled'] %} checked="checked" {% endif %}</td>
+                        {% if settings['digital_channels']['{0:d}'.format(chl)]['direction'] == "output pwm" %}
+                        <td class="tabledataleft"><input class="gentext" type="text" name="ch{{chl}}-pwm" value="{{settings['digital_channels']['{0:d}'.format(chl)]['pwm']}}"></td>
+                        <td class="tabledataleft"><input class="gentext" type="text" name="ch{{chl}}-frequency" value="{{settings['digital_channels']['{0:d}'.format(chl)]['frequency']}}"></td>
+                        {% else %}
+                        <input type="hidden" name="ch{{chl}}-pwm" value="{{settings['digital_channels']['{0:d}'.format(chl)]['pwm']}}">
+                        <input type="hidden" name="ch{{chl}}-frequency" value="{{settings['digital_channels']['{0:d}'.format(chl)]['frequency']}}">
+                        <td class="tabledatagrey">&nbsp;</td>
+                        <td class="tabledatagrey">&nbsp;</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td class="tabledataleft">&nbsp;</td>
+                        <td class="tabledataleft"><input type="submit" value="Change Digital"></td>
+                    </tr>
+
+            </tbody>
+        </table>
+        </form>
+        {% if settings['analogue_installed'] == True %}
+        <p class="sectiontext"><br>Analogue Channels</p>
+        <form method="post" action="/config" name="analoguesettings">
+            <input type="hidden" name="form-name" value='analoguesettings'>
+            <table>
+                <tr>
+                    <td class="tabledataleft">JSON Channel Prefix </td>
+                    <td class="tabledataleft"><input class="gentext" type="text" name="analogue_prefix" value="{{settings['analogue_prefix']}}"></td>
+                </tr>
+            </table>
+            <br>
+        <table>
+            <thead>
+                <tr>
+                    <th class="tabledataleft">Channel</th>
+                    <th class="tabledataleft">Description</th>
+                    <th class="tabledataleft">Enabled</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                    {% for chl in range(1,5) %}
+                    <tr>
+                        <td class="tabledataleft">{{settings['analogue_prefix']}}{{chl}}</td>
+                        <td class="tabledataleft"><input class="gentext" type="text" name="ch{{chl}}-name" value="{{settings['analogue_channels']['{0:d}'.format(chl)]['name']}}"></td>
+                        <td class="tabledataleft"><input class="gentext" type="checkbox" name="ch{{chl}}-enabled" {% if settings['analogue_channels']['{0:d}'.format(chl)]['enabled'] %} checked="checked" {% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                         <td class="tabledataleft">&nbsp;</td>
+                        <td class="tabledataleft"><input type="submit" value="Change Analogue"></td>
+                    </tr>
+
+            </tbody>
+        </table>
+        </form>
+        {% endif %}
+        <p>&nbsp;</p>
+        {% if serial_ports %}
+        <p class="sectiontext"><br>Serial Ports</p>
+        <form method="post" action="/config" name="serialsettings">
+            <input type="hidden" name="form-name" value='serialsettings'>
+        <table>
+            <thead>
+                <tr>
+                    <th class="tabledataleft">Port</th>
+                    <th class="tabledataleft">API Name</th>
+                    <th class="tabledataleft">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                    {% for port in serial_ports %}
+                    <tr>
+                        <td class="tabledataleft">{{port}}</td>
+                        <td class="tabledataleft">
+                            {% for serial_port in settings['serial_channels'] %}
+                                {% if serial_port['port'] == port %}
+                                    {{serial_port['api-name']}}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td class="tabledataleft">
+                            <A href="/serial?port={{port}}">Configure</A>
+                        </td>
+                    </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
+        </form>
+        {% endif %}
+        <p>&nbsp;</p>
+    </section>
+
+    <section class="banner">
+        <div class="copyright">
+            <strong>Software Version</strong> {{version}}<br>
+            &copy;{{year}} - <strong>TS Technologies</strong>
+        </div>
+    </section>
+</body>
+</html>
