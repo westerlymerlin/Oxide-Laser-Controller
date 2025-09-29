@@ -106,16 +106,6 @@ Monitors the state of the door and key inputs, and controls the laser enable
 state based on their statuses. This method performs continuous checks and
 updates the states accordingly by interacting with GPIO channels.
 
-<a id="laser_class.LaserObject.set_laser_power"></a>
-
-#### set\_laser\_power
-
-```python
-def set_laser_power(item, command)
-```
-
-Sets the laser power level based on the given value.
-
 <a id="laser_class.LaserObject.laser_status"></a>
 
 #### laser\_status
@@ -125,6 +115,16 @@ def laser_status(item, command)
 ```
 
 Returns the current laser power level.
+
+<a id="laser_class.LaserObject.set_laser_power"></a>
+
+#### set\_laser\_power
+
+```python
+def set_laser_power(item, command)
+```
+
+Sets the laser power level based on the given value.
 
 <a id="laser_class.LaserObject.laser_set_maxtime"></a>
 

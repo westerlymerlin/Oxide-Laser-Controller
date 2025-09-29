@@ -19,6 +19,10 @@ generated.
 
 ## laser
 
+<a id="custom_api.pyrometer"></a>
+
+## pyrometer
+
 <a id="custom_api.custom_api"></a>
 
 #### custom\_api
