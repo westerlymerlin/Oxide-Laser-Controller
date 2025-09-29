@@ -106,7 +106,7 @@ temperature recorded so far.
 #### reset\_max
 
 ```python
-def reset_max()
+def reset_max(item, command)
 ```
 
 Resets the maximum and average maximum temperature to a predefined minimum value and updates
@@ -140,6 +140,14 @@ Sets a timer to automatically turn off the laser after a specified maximum time 
 This method checks if the laser is currently on. If the laser is on, it calculates
 a future time based on the current time and the maximum allowed time. The laser
 will then be turned off after the calculated duration has passed.
+
+<a id="pyrometer_class.PyrometerObject.get_temperatures"></a>
+
+#### get\_temperatures
+
+```python
+def get_temperatures(item, command)
+```
 
 <a id="pyrometer_class.pyrometer"></a>
 

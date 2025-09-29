@@ -85,6 +85,14 @@ class LaserObject:
                     digital_channels[self._laser_enable_ch].write(self._laser_enabled)
             sleep(0.5)
 
+    def laser_status(self, item, command):
+        """Returns the current laser power level."""
+        return {'item': item, 'command': command, 'values': {'laser': digital_channels[self._laser_pwm_ch].read(),
+                                                                  'laser_enabled': self._laser_enabled,
+                                                                  'power': digital_channels[self._laser_pwm_ch].pwm,
+                                                                  'door': self._door_state, 'key': self._key_state,
+                                                             'laser_maxtime': self._laser_max_time}}
+
     def set_laser_power(self, item, command):
         """Sets the laser power level based on the given value."""
         if command > 100:
@@ -93,14 +101,7 @@ class LaserObject:
             command = 0
         digital_channels[self._laser_pwm_ch].change_setting('pwm', command)
         logger.info('LaserClass Laser power level set to %i', command)
-        return {'item': item, 'command': command, 'values': digital_channels[self._laser_pwm_ch].info()}
-
-    def laser_status(self, item, command):
-        """Returns the current laser power level."""
-        return {'item': item, 'command': command, 'values': {'laser': digital_channels[self._laser_pwm_ch].read(),
-                                                                  'laser_enabled': self._laser_enabled,
-                                                                  'power': digital_channels[self._laser_pwm_ch].pwm,
-                                                                  'door': self._door_state, 'key': self._key_state}}
+        return self.laser_status(item, command)
 
     def laser_set_maxtime(self, item, command):
         """Sets the laser timeout time based on the given value."""
@@ -112,7 +113,7 @@ class LaserObject:
         settings['laser-maxtime'] = command
         writesettings()
         logger.info('LaserClass Laser timeout set to %i', command)
-        return {'item': item, 'command': command, 'values': {'laser_maxtime': self._laser_max_time}}
+        return self.laser_status(item, command)
 
     def laser_off_timer(self):
         """
@@ -157,7 +158,7 @@ class LaserObject:
             self._laser_state = 0
             digital_channels[self._laser_pwm_ch].write(settings['digital_off_command'])
             digital_channels[self._laser_warning_ch].write(settings['digital_off_command'])
-        return {'item': item, 'command': command, 'values': {'laser': self._laser_state, 'laser_maxtime': self._laser_max_time}}
+        return self.laser_status(item, command)
 
     def http_status_data(self, item, command):
         """Returns a formatted dictionary of laser status data for the index page."""
