@@ -40,6 +40,7 @@ class PyrometerObject:
         self._average_temp = settings['pyro-min-temp']
         self._max_temp = settings['pyro-min-temp']
         self._average_max_temp = settings['pyro-min-temp']
+        self._current_temp = settings['pyro-min-temp']
         self._temperature_sequence = [settings['pyro-min-temp']] * settings['pyro-running-average']
         self._laser_state = 0
         self._laser_max_time = settings['laser-maxtime']
@@ -84,7 +85,7 @@ class PyrometerObject:
         self._average_temp = int(sum(self._temperature_sequence) / len(self._temperature_sequence))
         self._average_max_temp = max(self._average_temp, self._average_max_temp)
 
-    def reset_max(self):
+    def reset_max(self, item, command):
         """
         Resets the maximum and average maximum temperature to a predefined minimum value and updates
         the temperature.
@@ -95,7 +96,7 @@ class PyrometerObject:
         logger.info('PyroClass max temp reset')
         self._max_temp = settings['pyro-min-temp']
         self._average_max_temp = settings['pyro-min-temp']
-        return self.temperature()
+        return self.get_temperatures(item, command)
 
     def laser_on_off(self, item, command):
         """
@@ -114,6 +115,7 @@ class PyrometerObject:
             serial_channels['pyrometer'].api_command(item, 'pyrolaser-off')
             self._laser_state = 0
             logger.info('PyroClass Rangefinder laser is off')
+        return self.get_temperatures(item, command)
 
     def laser_off_timer(self):
         """
@@ -129,6 +131,11 @@ class PyrometerObject:
                 self.laser_on_off('autolaseroff', 0)
                 logger.info('PyroClass Rangefinder laser has been turned off due to timeout')
             sleep(1)
+
+    def get_temperatures(self, item, command):
+        values = {'temperature': self._current_temp, 'averagetemp': self._average_temp, 'maxtemp': self._max_temp,
+                  'averagemaxtemp': self._average_max_temp, 'pyrolaser': self._laser_state}
+        return {'item': item, 'command': command, 'values': values}
 
 
 pyrometer = PyrometerObject()
