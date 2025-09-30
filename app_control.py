@@ -90,7 +90,8 @@ def initialise():
                  '2': {'name': 'Analogue 2', 'pin': 1, 'enabled': False},
                  '3': {'name': 'Analogue 3', 'pin': 2, 'enabled': False},
                  '4': {'name': 'Analogue 4', 'pin': 3, 'enabled': False}},
-                 'serial_channels': []
+                 'serial_channels': [],
+                 'serial_debug': False
                  }
     isettings.update(custom_settings)
     return isettings
