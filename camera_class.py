@@ -21,22 +21,22 @@ class VideoCameraObject:
     error message is logged.
 
     """
-    def __init__(self, camera_index, camerasettings):
-        self.video = cv2.VideoCapture(camerasettings['cameraID'])
+    def __init__(self, camera_index, camera_config):
+        self.video = cv2.VideoCapture(camera_config['cameraID'])
         if not self.video.isOpened():
             logger.error('VideoCameraClass: No video camera found instance=%s', camera_index)
         else:
-            logger.info('VideoCameraClass: Starting video camera %s as video_camera_instance_%s', camerasettings['cameraID'], camera_index)
-            self.video.set(cv2.CAP_PROP_FPS, camerasettings['cameraFPS'])
-            self.video.set(cv2.CAP_PROP_FRAME_WIDTH, camerasettings['cameraWidth'])
-            self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, camerasettings['cameraHeight'])
-            self.video.set(cv2.CAP_PROP_BRIGHTNESS, camerasettings['cameraBrightness'])
-            self.video.set(cv2.CAP_PROP_CONTRAST, camerasettings['cameraContrast'])
-            self.video.set(cv2.CAP_PROP_SATURATION, camerasettings['cameraSaturation'])
-            self.video.set(cv2.CAP_PROP_HUE, camerasettings['cameraHue'])
-            self.video.set(cv2.CAP_PROP_GAMMA, camerasettings['cameraGamma'])
-            self.video.set(cv2.CAP_PROP_GAIN, camerasettings['cameraGain'])
-            self.video.set(cv2.CAP_PROP_SHARPNESS, camerasettings['cameraSharpness'])
+            logger.info('VideoCameraClass: Starting video camera %s as video_camera_instance_%s', camera_config['cameraID'], camera_index)
+            self.video.set(cv2.CAP_PROP_FPS, camera_config['cameraFPS'])
+            self.video.set(cv2.CAP_PROP_FRAME_WIDTH, camera_config['cameraWidth'])
+            self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, camera_config['cameraHeight'])
+            self.video.set(cv2.CAP_PROP_BRIGHTNESS, camera_config['cameraBrightness'])
+            self.video.set(cv2.CAP_PROP_CONTRAST, camera_config['cameraContrast'])
+            self.video.set(cv2.CAP_PROP_SATURATION, camera_config['cameraSaturation'])
+            self.video.set(cv2.CAP_PROP_HUE, camera_config['cameraHue'])
+            self.video.set(cv2.CAP_PROP_GAMMA, camera_config['cameraGamma'])
+            self.video.set(cv2.CAP_PROP_GAIN, camera_config['cameraGain'])
+            self.video.set(cv2.CAP_PROP_SHARPNESS, camera_config['cameraSharpness'])
             logger.info('camera%s Video FPS %s', camera_index, self.video.get(cv2.CAP_PROP_FPS))
             logger.info('camera%s Video Width %s', camera_index, self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
             logger.info('camera%s Video Height %s', camera_index, self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
