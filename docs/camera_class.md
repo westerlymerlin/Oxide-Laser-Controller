@@ -42,7 +42,9 @@ error message is logged.
 #### \_\_init\_\_
 
 ```python
+
 def __init__(camera_index, camera_config)
+=======
 ```
 
 <a id="camera_class.VideoCameraObject.__del__"></a>
