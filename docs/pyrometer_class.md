@@ -4,14 +4,11 @@
 
 # pyrometer\_class
 
-Module for managing operations of a pyrometer device.
+Module for managing operations of a Micro Epsilon Infrared Pyrometer.
 
 This module contains the `PyrometerObject` class which encapsulates various
-pyrometer operations including temperature readings, managing laser control,
+pyrometer operations including temperature readings, managing rangefinder laser control,
 and tracking the running average and maximum temperature.
-
-Classes:
-    - PyrometerObject: Handles pyrometer operations and state management.
 
 <a id="pyrometer_class.Thread"></a>
 
@@ -148,6 +145,16 @@ will then be turned off after the calculated duration has passed.
 ```python
 def get_temperatures(item, command)
 ```
+
+
+Retrieve temperature-related data.
+
+This function gathers various temperature readings and additional state data,
+returning them in a structured dictionary. The returned data includes information
+on current temperature, average temperature, maximum recorded temperature,
+average maximum recorded temperature, and the state of teh rangefinder laser on the pyrometer.
+
+=======
 
 <a id="pyrometer_class.pyrometer"></a>
 

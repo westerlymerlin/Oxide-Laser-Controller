@@ -1,10 +1,14 @@
 """
-Module for controlling and monitoring the laser system.
+Module for controlling and monitoring a LaserTree K60 450nm laser system.
 
 This module interacts with GPIO channels on a Raspberry Pi to manage the laser system,
 including interlocks for door and key switch states. It contains utility to monitor
 hardware statuses and perform necessary operations, such as enabling and disabling
 the laser based on safety conditions.
+
+The laser power is managed by pulse width modulation (PWM) output on a digital channel.
+The laser is automatically turned off after a specified timeout period if it is not
+shut down by API control.
 """
 from threading import Thread
 from time import time, sleep

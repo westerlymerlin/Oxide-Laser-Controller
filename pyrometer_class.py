@@ -1,12 +1,9 @@
 """
-Module for managing operations of a pyrometer device.
+Module for managing operations of a Micro Epsilon Infrared Pyrometer.
 
 This module contains the `PyrometerObject` class which encapsulates various
-pyrometer operations including temperature readings, managing laser control,
+pyrometer operations including temperature readings, managing rangefinder laser control,
 and tracking the running average and maximum temperature.
-
-Classes:
-    - PyrometerObject: Handles pyrometer operations and state management.
 """
 
 from threading import Thread
@@ -133,6 +130,14 @@ class PyrometerObject:
             sleep(1)
 
     def get_temperatures(self, item, command):
+        """
+        Retrieve temperature-related data.
+
+        This function gathers various temperature readings and additional state data,
+        returning them in a structured dictionary. The returned data includes information
+        on current temperature, average temperature, maximum recorded temperature,
+        average maximum recorded temperature, and the state of teh rangefinder laser on the pyrometer.
+        """
         values = {'temperature': self._current_temp, 'averagetemp': self._average_temp, 'maxtemp': self._max_temp,
                   'averagemaxtemp': self._average_max_temp, 'pyrolaser': self._laser_state}
         return {'item': item, 'command': command, 'values': values}

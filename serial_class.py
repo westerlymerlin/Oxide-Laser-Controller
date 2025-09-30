@@ -331,25 +331,34 @@ class SerialConnection:
                     for item in self._listener_messages:
                         self.port.write(b64decode(item['string1']))
                         sleep(0.5)
-                        databack = str(self.port.read(size=self._readbuffer), 'utf-8')
+                        binary_data = self.port.read(size=self._readbuffer)
+                        if settings['serial_debug']:
+                            logger.info('Serial Class: Interactive string 1 binary data: %s', binary_data)
+                        string_data = str(binary_data, 'utf-8')
                         if item['string2']:
                             self.port.write(b64decode(item['string2']))
                             sleep(0.5)
-                            databack = str(self.port.read(size=self._readbuffer), 'utf-8')
+                            binary_data = self.port.read(size=self._readbuffer)
+                            if settings['serial_debug']:
+                                logger.info('Serial Class: Interactive string 2 binary data: %s', binary_data)
+                            string_data = str(binary_data, 'utf-8')
                         listener_values.append({'name': item['name'], 'port': self._port,
-                                                'value': databack[item['start']:item['length']],
+                                                'value': string_data[item['start']:item['length']],
                                                 'portstatus': '%s (%s)' %(self._name, self._port),
                                                 "read_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
                 else:
-                    databack = str(self.port.read(size=self._readbuffer), 'utf-8')
+                    binary_data = self.port.read(size=self._readbuffer)
+                    if settings['serial_debug']:
+                        logger.info('Serial Class: Listener binary data: %s', binary_data)
+                    string_data = str(binary_data, 'utf-8')
                     for item in self._listener_messages:
                         name = item['name']
                         findstring = str_decode(item['string1']).decode('utf-8')
                         length = item['length']
-                        position = databack.find(findstring)
+                        position = string_data.find(findstring)
                         if position > -1:
                             listener_values.append({'name': name,  'port': self._port,
-                                          'value': databack[position + len(findstring):position + len(findstring) + length - 1],
+                                          'value': string_data[position + len(findstring):position + len(findstring) + length - 1],
                                                 'portstatus': '%s (%s)' %(self._name, self._port),
                                                 "read_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
                         else:
@@ -384,12 +393,18 @@ class SerialConnection:
                 if message_item['api-command'] == command:
                     self.port.write(b64decode(message_item['string1']))
                     sleep(0.5)
-                    databack = str(self.port.read(size=self._readbuffer), 'utf-8')
+                    binary_data = self.port.read(size=self._readbuffer)
+                    if settings['serial_debug']:
+                        logger.info('Serial Class: api string 1 binary data: %s', binary_data)
+                    string_data = str(binary_data, 'utf-8')
                     if message_item['string2']:
                         self.port.write(b64decode(message_item['string2']))
                         sleep(0.5)
-                        databack = str(self.port.read(size=self._readbuffer), 'utf-8')
-                    return {'item': item,'command': command, 'values': databack}
+                        binary_data = self.port.read(size=self._readbuffer)
+                        if settings['serial_debug']:
+                            logger.info('Serial Class: api string 1 binary data: %s', binary_data)
+                        string_data = str(binary_data, 'utf-8')
+                    return {'item': item,'command': command, 'values': string_data}
             return {'item': item, 'command': command, 'values': '', 'exception': 'Command not found'}
         except serial.SerialException :
             logger.exception('Serial Class: API Command Error on %s: %s', self._port, Exception)
@@ -466,5 +481,5 @@ def serial_api_checker(item):
 
 if __name__ == '__main__':
     sleep(1)
-    from json import dumps
-    print(dumps({'serial_status': serial_http_data(False, False)}))
+    print(serial_channels)
+    print(serial_http_data(False, False))
