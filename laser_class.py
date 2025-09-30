@@ -89,8 +89,13 @@ class LaserObject:
                     digital_channels[self._laser_enable_ch].write(self._laser_enabled)
             sleep(0.5)
 
-    def laser_status(self, item, command):
+    def laser_status(self, item, command, exception=None):
         """Returns the current laser power level."""
+        if exception:
+            return {'item': item, 'command': command, 'exception': exception,
+                    'values': {'laser': digital_channels[self._laser_pwm_ch].read(),
+                    'laser_enabled': self._laser_enabled, 'power': digital_channels[self._laser_pwm_ch].pwm,
+                    'door': self._door_state, 'key': self._key_state, 'laser_maxtime': self._laser_max_time}}
         return {'item': item, 'command': command, 'values': {'laser': digital_channels[self._laser_pwm_ch].read(),
                                                                   'laser_enabled': self._laser_enabled,
                                                                   'power': digital_channels[self._laser_pwm_ch].pwm,
@@ -146,7 +151,7 @@ class LaserObject:
             if self.check_door_state() + self.check_key_state() != 2:
                 logger.warning('LaserClass Laser was not switched on as key is off door open')
                 self._laser_state = 0
-                return {'item': item, 'command': command, 'values': {'laser': self._laser_state, 'laser_maxtime': self._laser_max_time}}
+                return self.laser_status(item, command, 'Key off or door open')
             logger.info('LaserClass Switching laser on')
             serial_channels['pyrometer'].change_poll_interval(1)
             digital_channels[self._laser_pwm_ch].write(settings['digital_on_command'])

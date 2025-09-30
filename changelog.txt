@@ -17,19 +17,19 @@ Version     Description
 1.2.2       Bug Fix: Removed read statements from pyro laser on and off methods
 1.2.1       added a test for opening the serial port on read/writes
 1.2.0       moved pyrometer to separate pyro class and forced port close after each interaction
-1.1.13      changed pyro rngefinder-timeout to laser timeout
+1.1.13      changed pyro rangefinder-timeout to laser timeout
 1.1.12      Added settings for mini camera
 1.1.11      Added pyrometer API commands
 1.1.10      Updates to logging settings
 1.1.9       Changed image output to configurable based on setting (default = png)
 1.1.8       Bug Fix: Fixed error in get_image that affected Linux systems and refined the camera's video handling by introducing a properly structured MJPEG stream method.
 1.1.7       Added commend to retrieve a base64 encoded jpeg from camera
-1.1.6       Testmode will not trigger an auto shut down and shows warining on webpage if enabled
+1.1.6       Testmode will not trigger an auto shut down and shows warning on webpage if enabled
 1.1.5       Changes return on interlocks to more descriptive names
 1.1.4       BugFix settings / camera saturation variable name
 1.1.3       Set GPIO Inputs as pull-up
 1.1.2       Added Additional camera settings
-1.1.1       Changed Door to N/C and keyswicth to N/O Contacts
+1.1.1       Changed Door to N/C and key switch to N/O Contacts
 1.1.0       Added webcam feature
 1.0.1       Added PWM to laserclass and pyrometer reader, door and key switch checks
 1.0.0       Initial commit

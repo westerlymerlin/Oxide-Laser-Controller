@@ -1,28 +1,10 @@
 """
-Camera Control and Image Capture
+A module for managing video camera streams and configurations.
 
-This module provides functionality for controlling and capturing images from a camera device.
-Handles camera setup, configuration, image acquisition, and cleanup operations.
-
-Features:
-    - Camera initialization and configuration
-    - Image capture and storage
-    - Camera parameter adjustments (exposure, resolution, etc.)
-    - Resource management (proper camera shutdown)
-
-Usage Example:
-    from camera import Camera
-
-    camera = Camera()
-    camera.capture('image.jpg')
-    camera.close()
-
-The module is designed for use with hardware camera interfaces and ensures proper
-resource handling for stable operation in long-running applications.
-
-Dependencies:
-    Hardware: Compatible camera device
-    Software: Appropriate camera drivers/libraries
+This module provides the `VideoCameraObject` class, which implements functionalities for initializing video
+camera streams, obtaining frames, and encoding them for streaming. The module leverages `cv2` for video
+capture and incorporates adjustable properties for various camera settings such as resolution, FPS,
+brightness, contrast, and more. Logging is used for monitoring camera actions and configurations.
 """
 
 import cv2
@@ -30,7 +12,7 @@ from logmanager import logger
 from app_control import settings
 
 
-class VideoCamera:
+class VideoCameraObject:
     """
     Initializes the VideoCamera class.
 
@@ -85,5 +67,5 @@ class VideoCamera:
             yield b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n'
 
 
-video_camera_instance_0 = VideoCamera(0, settings['camera0'])
-video_camera_instance_1 = VideoCamera(1, settings['camera1'])
+video_camera_instance_0 = VideoCameraObject(0, settings['camera0'])
+video_camera_instance_1 = VideoCameraObject(1, settings['camera1'])
