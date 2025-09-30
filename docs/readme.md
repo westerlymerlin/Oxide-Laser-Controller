@@ -79,31 +79,13 @@ Note:
     be imported by other modules that need access to global settings or version
     information.
 
-[camera](./camera.md)  
-Camera Control and Image Capture
+[camera_class](./camera_class.md)  
+A module for managing video camera streams and configurations.
 
-This module provides functionality for controlling and capturing images from a camera device.
-Handles camera setup, configuration, image acquisition, and cleanup operations.
-
-Features:
-    - Camera initialization and configuration
-    - Image capture and storage
-    - Camera parameter adjustments (exposure, resolution, etc.)
-    - Resource management (proper camera shutdown)
-
-Usage Example:
-    from camera import Camera
-
-    camera = Camera()
-    camera.capture('image.jpg')
-    camera.close()
-
-The module is designed for use with hardware camera interfaces and ensures proper
-resource handling for stable operation in long-running applications.
-
-Dependencies:
-    Hardware: Compatible camera device
-    Software: Appropriate camera drivers/libraries
+This module provides the `VideoCameraObject` class, which implements functionalities for initializing video
+camera streams, obtaining frames, and encoding them for streaming. The module leverages `cv2` for video
+capture and incorporates adjustable properties for various camera settings such as resolution, FPS,
+brightness, contrast, and more. Logging is used for monitoring camera actions and configurations.
 
 [config_class](./config_class.md)  
 Application Configuration

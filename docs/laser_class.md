@@ -115,7 +115,7 @@ updates the states accordingly by interacting with GPIO channels.
 #### laser\_status
 
 ```python
-def laser_status(item, command)
+def laser_status(item, command, exception=None)
 ```
 
 Returns the current laser power level.
