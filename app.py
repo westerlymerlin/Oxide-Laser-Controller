@@ -33,7 +33,7 @@ from logmanager import logger
 from oled_class import set_oled
 from api_parser import parsecontrol
 from serial_class import serial_ports, serial_port_info
-from camera import video_camera_instance_0, video_camera_instance_1
+from camera_class import video_camera_instance_0, video_camera_instance_1
 
 app = Flask(__name__)
 app.secret_key = API_KEY
