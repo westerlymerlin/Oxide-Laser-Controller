@@ -146,12 +146,15 @@ will then be turned off after the calculated duration has passed.
 def get_temperatures(item, command)
 ```
 
+
 Retrieve temperature-related data.
 
 This function gathers various temperature readings and additional state data,
 returning them in a structured dictionary. The returned data includes information
 on current temperature, average temperature, maximum recorded temperature,
 average maximum recorded temperature, and the state of teh rangefinder laser on the pyrometer.
+
+=======
 
 <a id="pyrometer_class.pyrometer"></a>
 
