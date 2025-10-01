@@ -4,7 +4,7 @@
 echo "
 **** pulling the master branch from github ****
 "
-cd ~/github/TST-Base-Controller/
+cd ~/github/UCL-Oxide-Laser-Controller/
 git pull origin master
 cd ~
 
