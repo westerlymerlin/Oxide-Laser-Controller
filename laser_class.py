@@ -136,7 +136,7 @@ class LaserObject:
         off_time = time() + self._laser_max_time
         while self._laser_state == 1:
             if time() > off_time:
-                self.laser_on_off('autolaseroff', 0)
+                self.laser_on_off('auto-laser-off', 0)
                 logger.info('LaserClass Laser has been turned off due to timeout')
             sleep(1)
 
@@ -173,11 +173,11 @@ class LaserObject:
     def http_status_data(self, item, command):
         """Returns a formatted dictionary of laser status data for the index page."""
         http_data = {'item': item, 'command': command, 'values': {}}
-        if self._key_state == 1:
+        if self._key_state == 0:
             http_data['values']['key'] = {'name': 'Key', 'direction': 'input', 'value': 'Key on', 'enabled': True}
         else:
             http_data['values']['key'] = {'name': 'Key', 'direction': 'input', 'value': 'Key off', 'enabled': True}
-        if self._door_state == 1:
+        if self._door_state == 0:
             http_data['values']['door'] = {'name': 'Door', 'direction': 'input', 'value': 'Closed', 'enabled': True}
         else:
             http_data['values']['door'] = {'name': 'Door', 'direction': 'input', 'value': 'Open', 'enabled': True}
@@ -188,7 +188,7 @@ class LaserObject:
                 http_data['values']['laser'] = {'name': 'Laser', 'direction': 'output', 'value': 'Standby', 'enabled': True}
         else:
             http_data['values']['laser'] = {'name': 'Laser', 'direction': 'output', 'value': 'Power off', 'enabled': True}
-        http_data['values']['laserpower'] = {'name': 'Laser Power', 'direction': 'setting',
+        http_data['values']['power'] = {'name': 'Laser Power', 'direction': 'setting',
                                              'value': '%s %%' % digital_channels[self._laser_pwm_ch].pwm, 'enabled': True}
         return http_data
 
