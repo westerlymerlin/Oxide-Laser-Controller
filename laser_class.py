@@ -53,9 +53,9 @@ class LaserObject:
         self.interlock_monitor_thread.start()
 
     def check_door_state(self):
-        """Returns a 1 for door closed and 0 for door open, door switch will ground te GPIO pin so will generate a 0
-         for closed and a 1 for open. Sets the door LED to show it is closed (on) or open (off)."""
-        door_state = int(not digital_channels[self._door_switch_ch].read())  # invert the door switch value
+        """Returns a 0 for door closed and 1 for door open alarm, door switch will ground te GPIO pin so will generate
+         a 0 for closed and a 1 for open. Sets the door LED to show it is closed (on) or open (off)."""
+        door_state = digital_channels[self._door_switch_ch].read()
         if self._door_state != door_state:
             self._door_state = door_state
             digital_channels[self._door_led_ch].write(self._door_state)
@@ -64,7 +64,7 @@ class LaserObject:
 
     def check_key_state(self):
         """Returns a 1 for key switch closed and 0 for key switch open"""
-        key_state = digital_channels[self._key_switch_ch].read()
+        key_state = int(not digital_channels[self._key_switch_ch].read())  # Invert the key switch state
         if self._key_state != key_state:
             self._key_state = key_state
             logger.info('LaserClass Key State has changed to = %i', self._key_state)
@@ -74,10 +74,11 @@ class LaserObject:
         """
         Monitors the state of the door and key inputs, and controls the laser enable
         state based on their statuses. This method performs continuous checks and
-        updates the states accordingly by interacting with GPIO channels.
+        updates the states accordingly by interacting with GPIO channels. Both door
+        and key states should be 0 (not alarming) for the laser to be enabled.
         """
         while True:
-            if self.check_door_state() + self.check_key_state() == 2:
+            if self.check_door_state() + self.check_key_state() == 0:
                 if self._laser_enabled == 0:
                     self._laser_enabled = 1
                     logger.info('LaserClass Laser is enabled')
