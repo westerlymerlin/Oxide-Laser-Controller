@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# show status of gubnicorn and nginix
+# show status of gunicorn and nginx
 
 echo "
 **** system status of nginx and gunicorn ****
