@@ -186,6 +186,12 @@ Returns a formatted dictionary of laser status data for the index page.
 def digital_convertor(value)
 ```
 
+
+Converts a given value into its corresponding digital command based on predefined
+settings.
+
+=======
+
 <a id="laser_class.laser"></a>
 
 #### laser
