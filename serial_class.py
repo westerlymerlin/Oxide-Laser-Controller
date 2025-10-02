@@ -336,14 +336,20 @@ class SerialConnection:
                         binary_data = self.port.read(size=self._readbuffer)
                         if settings['serial_debug']:
                             logger.info('Serial Class: Interactive string 1 binary data: %s', binary_data)
-                        string_data = str(binary_data, 'utf-8')
+                        try:
+                            string_data = str(binary_data, 'utf-8')
+                        except UnicodeDecodeError:
+                            string_data = str(binary_data, 'iso-8859-1')
                         if item['string2']:
                             self.port.write(b64decode(item['string2']))
                             sleep(0.5)
                             binary_data = self.port.read(size=self._readbuffer)
                             if settings['serial_debug']:
                                 logger.info('Serial Class: Interactive string 2 binary data: %s', binary_data)
-                            string_data = str(binary_data, 'utf-8')
+                                try:
+                                    string_data = str(binary_data, 'utf-8')
+                                except UnicodeDecodeError:
+                                    string_data = str(binary_data, 'iso-8859-1')
                         listener_values.append({'name': item['name'], 'port': self._port,
                                                 'value': string_data[item['start']:item['length']],
                                                 'portstatus': '%s (%s)' %(self._name, self._port),
@@ -352,7 +358,10 @@ class SerialConnection:
                     binary_data = self.port.read(size=self._readbuffer)
                     if settings['serial_debug']:
                         logger.info('Serial Class: Listener binary data: %s', binary_data)
-                    string_data = str(binary_data, 'utf-8')
+                    try:
+                        string_data = str(binary_data, 'utf-8')
+                    except UnicodeDecodeError:
+                        string_data = str(binary_data, 'iso-8859-1')
                     for item in self._listener_messages:
                         name = item['name']
                         findstring = str_decode(item['string1']).decode('utf-8')
