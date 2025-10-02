@@ -58,7 +58,7 @@ class LaserObject:
         door_state = digital_channels[self._door_switch_ch].read()
         if self._door_state != door_state:
             self._door_state = door_state
-            digital_channels[self._door_led_ch].write(self._door_state)
+            digital_channels[self._door_led_ch].write(digital_convertor(self._door_state))
             logger.info('LaserClass Door State has changed to = %i', self._door_state)
         return self._door_state
 
@@ -82,7 +82,7 @@ class LaserObject:
                 if self._laser_enabled == 0:
                     self._laser_enabled = 1
                     logger.info('LaserClass Laser is enabled')
-                    digital_channels[self._laser_enable_ch].write(self._laser_enabled)
+                    digital_channels[self._laser_enable_ch].write(digital_convertor(self._laser_enabled))
             else:
                 if self._laser_enabled == 1:
                     self._laser_enabled = 0
@@ -128,7 +128,6 @@ class LaserObject:
     def laser_off_timer(self):
         """
         Sets a timer to automatically turn off the laser after a specified maximum time is reached.
-
         This method checks if the laser is currently on. If the laser is on, it calculates
         a future time based on the current time and the maximum allowed time. The laser
         will then be turned off after the calculated duration has passed.
@@ -191,5 +190,11 @@ class LaserObject:
         http_data['values']['power'] = {'name': 'Laser Power', 'direction': 'setting',
                                              'value': '%s %%' % digital_channels[self._laser_pwm_ch].pwm, 'enabled': True}
         return http_data
+
+def digital_convertor(value):
+    if value == 1:
+        return settings['digital_on_command']
+    else:
+        return settings['digital_off_command']
 
 laser = LaserObject()

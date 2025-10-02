@@ -150,7 +150,6 @@ def laser_off_timer()
 ```
 
 Sets a timer to automatically turn off the laser after a specified maximum time is reached.
-
 This method checks if the laser is currently on. If the laser is on, it calculates
 a future time based on the current time and the maximum allowed time. The laser
 will then be turned off after the calculated duration has passed.
@@ -178,6 +177,14 @@ def http_status_data(item, command)
 ```
 
 Returns a formatted dictionary of laser status data for the index page.
+
+<a id="laser_class.digital_convertor"></a>
+
+#### digital\_convertor
+
+```python
+def digital_convertor(value)
+```
 
 <a id="laser_class.laser"></a>
 
