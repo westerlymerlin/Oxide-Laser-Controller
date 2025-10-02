@@ -276,10 +276,12 @@ class SerialConnection:
                                                 'length': message['length']})
                 self._listener_values.append({'name': message['name'], 'port': self._port, 'value': '0',
                                               'portstatus': '%s Not Ready' % self._port, "read_time": "01-01-1979 00:00:00"})
+                logger.info('Serial Class: %s, listener message registered: %s', self._port, message['name'])
             else:
                 self._api_messages.append({'name': message['name'], 'string1': message['string1'],
                                            'string2': message['string2'], 'start': message['start'],
                                            'length': message['length'], 'api-command': message['api-command']})
+                logger.info('Serial Class: %s, api message registered: %s', self._port, message['api-command'])
         self.init_port()
 
     def init_port(self):
