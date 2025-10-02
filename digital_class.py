@@ -111,8 +111,8 @@ class ChannelObject:
             else:
                 GPIO.output(self.gpio, 0)
         else:
-            logger.warning('Invalid value "%s" for digital channel "%s"', value, self.name)
-            return 'Invalid value %s for digital channel %s' % (value, self.name)
+            logger.warning('Invalid value (%s) for digital channel "%s"', value, self.name)
+            return 'Invalid value (%s) for digital channel %s' % (value, self.name)
         logger.info('Digital Channel "%s" set to "%s"', self.name, value)
         return ''
 
