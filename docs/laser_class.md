@@ -85,8 +85,8 @@ necessary initialization details are handled.
 def check_door_state()
 ```
 
-Returns a 1 for door closed and 0 for door open, door switch will ground te GPIO pin so will generate a 0
-for closed and a 1 for open. Sets the door LED to show it is closed (on) or open (off).
+Returns a 0 for door closed and 1 for door open alarm, door switch will ground te GPIO pin so will generate
+a 0 for closed and a 1 for open. Sets the door LED to show it is closed (on) or open (off).
 
 <a id="laser_class.LaserObject.check_key_state"></a>
 
@@ -108,7 +108,8 @@ def interlock_monitor()
 
 Monitors the state of the door and key inputs, and controls the laser enable
 state based on their statuses. This method performs continuous checks and
-updates the states accordingly by interacting with GPIO channels.
+updates the states accordingly by interacting with GPIO channels. Both door
+and key states should be 0 (not alarming) for the laser to be enabled.
 
 <a id="laser_class.LaserObject.laser_status"></a>
 
@@ -149,7 +150,6 @@ def laser_off_timer()
 ```
 
 Sets a timer to automatically turn off the laser after a specified maximum time is reached.
-
 This method checks if the laser is currently on. If the laser is on, it calculates
 a future time based on the current time and the maximum allowed time. The laser
 will then be turned off after the calculated duration has passed.
@@ -177,6 +177,17 @@ def http_status_data(item, command)
 ```
 
 Returns a formatted dictionary of laser status data for the index page.
+
+<a id="laser_class.digital_convertor"></a>
+
+#### digital\_convertor
+
+```python
+def digital_convertor(value)
+```
+
+Converts a given value into its corresponding digital command based on predefined
+settings.
 
 <a id="laser_class.laser"></a>
 
