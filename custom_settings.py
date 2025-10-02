@@ -195,7 +195,7 @@ custom_settings = {
                 'string2': ''
             }
         ],
-        'mode': 'listener',
+        'mode': 'interactive',
         'poll_interval': 5,
         'port': '/dev/ttyUSB0'
         }
