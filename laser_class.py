@@ -195,9 +195,12 @@ class LaserObject:
         return http_data
 
 def digital_convertor(value):
+    """
+    Converts a given value into its corresponding digital command based on predefined
+    settings.
+    """
     if value == 1:
         return settings['digital_on_command']
-    else:
-        return settings['digital_off_command']
+    return settings['digital_off_command']
 
 laser = LaserObject()

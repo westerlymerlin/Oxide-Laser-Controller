@@ -195,7 +195,7 @@ custom_settings = {
                 'string2': ''
             }
         ],
-        'mode': 'interactive',
+        'mode': 'listener',
         'poll_interval': 5,
         'port': '/dev/ttyUSB0'
         }
@@ -230,4 +230,5 @@ custom_settings = {
     'pyro-running-average': 5,
     'pyro-min-temp': 385,
     'laser-maxtime': 300,
+    'app-name': 'Laser Controller'
 }
