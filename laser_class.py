@@ -45,8 +45,8 @@ class LaserObject:
         self._laser_enable_ch = 16
         self._laser_state = 0
         self._laser_enabled = 0
-        self._key_state = 0
-        self._door_state = 0
+        self._key_state = 1
+        self._door_state = 1
         self._laser_max_time = settings['laser-maxtime']
         self.interlock_monitor_thread = Thread(target=self.interlock_monitor)
         self.interlock_monitor_thread.name = 'Laser safety interlock monitor thread'
@@ -58,7 +58,10 @@ class LaserObject:
         door_state = digital_channels[self._door_switch_ch].read()
         if self._door_state != door_state:
             self._door_state = door_state
-            digital_channels[self._door_led_ch].write(digital_convertor(self._door_state))
+            if self._door_state == 0:
+                digital_channels[self._door_led_ch].write(settings['digital_on_command'])
+            else:
+                digital_channels[self._door_led_ch].write(settings['digital_off_command'])
             logger.info('LaserClass Door State has changed to = %i', self._door_state)
         return self._door_state
 
