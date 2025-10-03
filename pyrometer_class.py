@@ -40,29 +40,45 @@ class PyrometerObject:
         self._current_temp = settings['pyro-min-temp']
         self._temperature_sequence = [settings['pyro-min-temp']] * settings['pyro-running-average']
         self._laser_state = 0
+        self._default_poll_interval = 5
+        self._poll_interval =  self._default_poll_interval
         self._laser_max_time = settings['laser-maxtime']
+        timerthread = Thread(target=self.pyrometer_updater)
+        timerthread.name = 'pyro reader thread'
+        timerthread.start()
 
-    def temperature(self):
+    def pyrometer_updater(self):
         """
-        Gets the current temperature and pyrometer laser state from the serial
-        channel's listener values.
+        Continuously updates pyrometer data and moving average based on a defined polling interval.
+        """
+        while True:
+            sleep_counter = 0
+            self.read_pyrometer_data()
+            self.update_moving_average()
+            while sleep_counter < self._poll_interval:
+                sleep_counter += 1
+                sleep(1)
 
-        This method processes a list of pyrometer values to identify and retrieve
-        the current temperature and laser state.
-
-        :return: A tuple containing the current temperature and pyrometer laser
-                 state as binary values.
-        :rtype: tuple
+    def read_pyrometer_data(self):
+        """
+        Calculates the temperature and laser state from the pyrometer data. The method processes
+        the serial listener values associated with the pyrometer channel. It extracts and decodes
+        the temperature and laser state values from the corresponding data entries and updates the class.
         """
         pyro_values = serial_channels['pyrometer'].listener_values()
-        current_temperature = 0
-        current_laser_state = 0
         for value in pyro_values:
             if value['name'] == 'temperature':
-                current_temperature  = value['binary']
+                try:
+                    binary_1 = value['value'].encode('iso-8859-1')
+                    self._current_temp  = ((binary_1[0] * 256 + binary_1[1]) - 1000) / 10
+                except IndexError:
+                    self._current_temp = settings['pyro-min-temp']
             if value['name'] == 'pyrometer laser':
-                current_laser_state = value['binary']
-        return current_temperature, current_laser_state
+                try:
+                    binary_1 = value['value'].encode('iso-8859-1')
+                    self._laser_state = int(binary_1[0])
+                except IndexError:
+                    self._laser_state = 0
 
     def update_moving_average(self):
         """
@@ -72,12 +88,12 @@ class PyrometerObject:
         average temperature from the updated list and compares it with the maximum average
         temperature recorded so far.
         """
-        if self.value <= settings['pyro-min-temp']:
+        if self._current_temp  <= settings['pyro-min-temp']:
             self._temperature_sequence = [settings['pyro-min-temp']] * settings['pyro-running-average']
-        elif self.value > (self._average_temp + 20):  # speed up getting to average while sample is heating
-            self._temperature_sequence = [self.value] * settings['pyro-running-average']
+        elif self._current_temp  > (self._average_temp + 20):  # speed up getting to average while sample is heating
+            self._temperature_sequence = [self._current_temp ] * settings['pyro-running-average']
         else:
-            self._temperature_sequence.append(self.value)
+            self._temperature_sequence.append(self._current_temp)
             self._temperature_sequence.pop(0)
         self._average_temp = int(sum(self._temperature_sequence) / len(self._temperature_sequence))
         self._average_max_temp = max(self._average_temp, self._average_max_temp)
@@ -136,11 +152,19 @@ class PyrometerObject:
         This function gathers various temperature readings and additional state data,
         returning them in a structured dictionary. The returned data includes information
         on current temperature, average temperature, maximum recorded temperature,
-        average maximum recorded temperature, and the state of teh rangefinder laser on the pyrometer.
+        average maximum recorded temperature, and the state of the rangefinder laser on the pyrometer.
         """
         values = {'temperature': self._current_temp, 'averagetemp': self._average_temp, 'maxtemp': self._max_temp,
                   'averagemaxtemp': self._average_max_temp, 'pyrolaser': self._laser_state}
         return {'item': item, 'command': command, 'values': values}
 
+    def change_poll_interval(self, value):
+        """
+        Updates the poll interval to the specified value. Entering 0 returns to the default value
+        """
+        if value > 0:
+            self._poll_interval = value
+        else:
+            self._poll_interval = self._default_poll_interval
 
 pyrometer = PyrometerObject()

@@ -66,23 +66,27 @@ This class is responsible for storing and managing temperature-related
 values and laser state information. It initializes its attributes based
 on predefined settings.
 
-<a id="pyrometer_class.PyrometerObject.temperature"></a>
+<a id="pyrometer_class.PyrometerObject.pyrometer_updater"></a>
 
-#### temperature
+#### pyrometer\_updater
 
 ```python
-def temperature()
+def pyrometer_updater()
 ```
 
-Gets the current temperature and pyrometer laser state from the serial
-channel's listener values.
+Continuously updates pyrometer data and moving average based on a defined polling interval.
 
-This method processes a list of pyrometer values to identify and retrieve
-the current temperature and laser state.
+<a id="pyrometer_class.PyrometerObject.read_pyrometer_data"></a>
 
-:return: A tuple containing the current temperature and pyrometer laser
-         state as binary values.
-:rtype: tuple
+#### read\_pyrometer\_data
+
+```python
+def read_pyrometer_data()
+```
+
+Calculates the temperature and laser state from the pyrometer data. The method processes
+the serial listener values associated with the pyrometer channel. It extracts and decodes
+the temperature and laser state values from the corresponding data entries and updates the class.
 
 <a id="pyrometer_class.PyrometerObject.update_moving_average"></a>
 
@@ -151,7 +155,17 @@ Retrieve temperature-related data.
 This function gathers various temperature readings and additional state data,
 returning them in a structured dictionary. The returned data includes information
 on current temperature, average temperature, maximum recorded temperature,
-average maximum recorded temperature, and the state of teh rangefinder laser on the pyrometer.
+average maximum recorded temperature, and the state of the rangefinder laser on the pyrometer.
+
+<a id="pyrometer_class.PyrometerObject.change_poll_interval"></a>
+
+#### change\_poll\_interval
+
+```python
+def change_poll_interval(value)
+```
+
+Updates the poll interval to the specified value. Entering 0 returns to the default value
 
 <a id="pyrometer_class.pyrometer"></a>
 
