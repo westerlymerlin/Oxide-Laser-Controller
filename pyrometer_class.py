@@ -88,6 +88,7 @@ class PyrometerObject:
         average temperature from the updated list and compares it with the maximum average
         temperature recorded so far.
         """
+        self._max_temp = max(self._max_temp, self._current_temp)
         if self._current_temp  <= settings['pyro-min-temp']:
             self._temperature_sequence = [settings['pyro-min-temp']] * settings['pyro-running-average']
         elif self._current_temp  > (self._average_temp + 20):  # speed up getting to average while sample is heating
@@ -95,7 +96,7 @@ class PyrometerObject:
         else:
             self._temperature_sequence.append(self._current_temp)
             self._temperature_sequence.pop(0)
-        self._average_temp = int(sum(self._temperature_sequence) / len(self._temperature_sequence))
+        self._average_temp = float(sum(self._temperature_sequence) / len(self._temperature_sequence))
         self._average_max_temp = max(self._average_temp, self._average_max_temp)
 
     def reset_max(self, item, command):
