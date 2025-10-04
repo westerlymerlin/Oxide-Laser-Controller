@@ -266,13 +266,6 @@ Communication Modes:
     Interactive: Send commands and read responses with configurable timing
     Listener: Continuously monitor incoming data and extract specific values
 
-Dependencies:
-    - pyserial: Core serial communication
-    - threading: Background data acquisition
-    - base64: Message encoding/storage
-    - app_control: Configuration management
-    - logmanager: Activity logging
-
 Usage:
     The module automatically initializes all configured serial channels on import.
     Channels can be managed through the configuration functions, and data can be

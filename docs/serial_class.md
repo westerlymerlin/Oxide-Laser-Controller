@@ -39,13 +39,6 @@ Communication Modes:
     Interactive: Send commands and read responses with configurable timing
     Listener: Continuously monitor incoming data and extract specific values
 
-Dependencies:
-    - pyserial: Core serial communication
-    - threading: Background data acquisition
-    - base64: Message encoding/storage
-    - app_control: Configuration management
-    - logmanager: Activity logging
-
 Usage:
     The module automatically initializes all configured serial channels on import.
     Channels can be managed through the configuration functions, and data can be
@@ -59,9 +52,9 @@ Usage:
 
 ## sleep
 
-<a id="serial_class.Timer"></a>
+<a id="serial_class.Thread"></a>
 
-## Timer
+## Thread
 
 <a id="serial_class.b64decode"></a>
 
@@ -140,7 +133,7 @@ Base64, and then decodes the resulting bytes into a UTF-8 string.
 #### update\_serial\_channel
 
 ```python
-def update_serial_channel(newsettings)
+def update_serial_channel(serial_config)
 ```
 
 Updates the serial channel settings with given new settings.
@@ -172,7 +165,7 @@ list of channels.
 #### update\_serial\_message
 
 ```python
-def update_serial_message(newsettings)
+def update_serial_message(serial_message)
 ```
 
 Update and manage the serial message structure and settings.
@@ -187,7 +180,7 @@ manages the organization of messages for a serial channel.
 #### delete\_serial\_message
 
 ```python
-def delete_serial_message(newsettings)
+def delete_serial_message(serial_message)
 ```
 
 Deletes a specific serial message from the configuration of a serial port.
