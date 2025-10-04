@@ -34,13 +34,6 @@ Communication Modes:
     Interactive: Send commands and read responses with configurable timing
     Listener: Continuously monitor incoming data and extract specific values
 
-Dependencies:
-    - pyserial: Core serial communication
-    - threading: Background data acquisition
-    - base64: Message encoding/storage
-    - app_control: Configuration management
-    - logmanager: Activity logging
-
 Usage:
     The module automatically initializes all configured serial channels on import.
     Channels can be managed through the configuration functions, and data can be
@@ -48,7 +41,7 @@ Usage:
 """
 from ast import literal_eval
 from time import sleep
-from threading import Timer
+from threading import Thread
 from base64 import b64decode, b64encode
 from datetime import datetime
 import glob
@@ -80,7 +73,7 @@ def str_decode(string):
     return b64decode(string)
 
 
-def update_serial_channel(newsettings):
+def update_serial_channel(serial_config):
     """
     Updates the serial channel settings with given new settings.
 
@@ -91,15 +84,15 @@ def update_serial_channel(newsettings):
     the 'api-name' field before saving.
     """
     serial_channel_list = []
-    serial_channel= {'api-name': friendlyname(newsettings['api-name']), 'port': newsettings['port'],
-                     'mode': newsettings['mode'], 'baud': int(newsettings['baud']),
-                     'poll_interval': int(newsettings['poll_interval']), 'messages': []}
+    serial_channel= {'api-name': friendlyname(serial_config['api-name']), 'port': serial_config['port'],
+                     'mode': serial_config['mode'], 'baud': int(serial_config['baud']),
+                     'poll_interval': int(serial_config['poll_interval']), 'messages': []}
     if len(settings['serial_channels']) == 0:
         settings['serial_channels'] = [serial_channel]
         writesettings()
         return serial_channel
     for conn in settings['serial_channels']:
-        if conn['port'] == newsettings['port']:
+        if conn['port'] == serial_config['port']:
             serial_channel['messages'] = conn['messages']
         else:
             serial_channel_list.append(conn)
@@ -107,7 +100,7 @@ def update_serial_channel(newsettings):
     serial_channel_list.sort(key=lambda x: x['api-name'])
     settings['serial_channels'] = serial_channel_list
     writesettings()
-    logger.info('Serial Class: serial channel %s updated', newsettings['port'])
+    logger.info('Serial Class: serial channel %s updated', serial_config['port'])
     return serial_channel
 
 
@@ -131,7 +124,7 @@ def delete_serial_channel(port_id):
     return serial_channel_list
 
 
-def update_serial_message(newsettings):
+def update_serial_message(serial_message):
     """
     Update and manage the serial message structure and settings.
 
@@ -140,31 +133,31 @@ def update_serial_message(newsettings):
     port, and writes the updated settings. It logs actions performed and
     manages the organization of messages for a serial channel.
     """
-    print(newsettings['string1'], newsettings['string2'])
+    print(serial_message['string1'], serial_message['string2'])
     try:
-        string1 = literal_eval(newsettings['string1'])
+        string1 = literal_eval(serial_message['string1'])
     except (ValueError, SyntaxError):
-        string1 = literal_eval("b'%s'" %newsettings['string1'])
+        string1 = literal_eval("b'%s'" % serial_message['string1'])
     try:
-        string2 = literal_eval(newsettings['string2'])
+        string2 = literal_eval(serial_message['string2'])
     except (ValueError, SyntaxError):
-        string2 = literal_eval("b'%s'" %newsettings['string2'])
-    newmessages = [{'name': newsettings['name'], 'string1': str_encode(string1),
-                    'string2': str_encode(string2), 'start': int(newsettings['start']),
-                    'length': int(newsettings['length']), 'api-command': friendlyname(newsettings['api-command'])}]
+        string2 = literal_eval("b'%s'" % serial_message['string2'])
+    message_list = [{'name': serial_message['name'], 'string1': str_encode(string1),
+                    'string2': str_encode(string2), 'start': int(serial_message['start']),
+                    'length': int(serial_message['length']), 'api-command': friendlyname(serial_message['api-command'])}]
     for conn in settings['serial_channels']:
-        if conn['port'] == newsettings['port']:
+        if conn['port'] == serial_message['port']:
             for message in conn['messages']:
-                if message['name'] != newsettings['name']:
-                    newmessages.append(message)
-            newmessages.sort(key=lambda x: x['name'])
-            conn['messages'] = newmessages
+                if message['name'] != serial_message['name']:
+                    message_list.append(message)
+            message_list.sort(key=lambda x: x['name'])
+            conn['messages'] = message_list
     writesettings()
-    logger.info('Serial Class: serial message %s added to %s', newsettings['name'], newsettings['port'])
-    return newmessages
+    logger.info('Serial Class: serial message %s added to %s', serial_message['name'], serial_message['port'])
+    return message_list
 
 
-def delete_serial_message(newsettings):
+def delete_serial_message(serial_message):
     """
     Deletes a specific serial message from the configuration of a serial port.
 
@@ -173,16 +166,16 @@ def delete_serial_message(newsettings):
     After performing the deletion, the updated settings are saved, and an
     informational log message is generated.
     """
-    newmessages = []
+    messages_list = []
     for conn in settings['serial_channels']:
-        if conn['port'] == newsettings['port']:
+        if conn['port'] == serial_message['port']:
             for message in conn['messages']:
-                if message['name'] != newsettings['name']:
-                    newmessages.append(message)
-            conn['messages'] = newmessages
+                if message['name'] != serial_message['name']:
+                    messages_list.append(message)
+            conn['messages'] = messages_list
     writesettings()
-    logger.info('Serial Class: serial message %s deleted from %s', newsettings['name'], newsettings['port'])
-    return newmessages
+    logger.info('Serial Class: serial message %s deleted from %s', serial_message['name'], serial_message['port'])
+    return messages_list
 
 
 def serial_port_info(port_id):
@@ -253,17 +246,17 @@ class SerialConnection:
     polling of devices and processing of incoming data based on predefined configurations.
     """
     def __init__(self, device):
-        self._portready = False
-        self._baudrate = device['baud']
+        self._port_ready = False
+        self._baud_rate = device['baud']
         self._port = device['port']
         self.port = None
         self._mode = device['mode']
         self._active = False
         self._name = device['api-name']
         if self._mode == 'interactive':
-            self._readbuffer = 256
+            self._read_buffer = 256
         else:
-            self._readbuffer = 1024
+            self._read_buffer = 1024
         self._default_poll_interval = device['poll_interval']
         self._poll_interval =  self._default_poll_interval
         self._listener_messages = []
@@ -292,17 +285,17 @@ class SerialConnection:
         marked as ready. If the connection fails, the port is marked as not ready.
         """
         try:
-            self.port = serial.Serial(self._port, self._baudrate, timeout=1)
+            self.port = serial.Serial(self._port, self._baud_rate, timeout=1)
             self.port.reset_input_buffer()
-            self._portready = True
+            self._port_ready = True
             print('Serial Class: %s connected' % self._port)
             logger.info('Serial Class: %s connected', self._port)
             if len(self._listener_messages) > 0:
-                reader_thread = Timer(1, self.listener_timer)
+                reader_thread = Thread(target=self.listener_timer, daemon=True)
                 reader_thread.name = 'Serial listener %s' % self._name
                 reader_thread.start()
         except serial.SerialException:
-            self._portready = False
+            self._port_ready = False
             logger.error('Serial Class: %s not connected', self._port)
 
     def name(self):
@@ -319,11 +312,11 @@ class SerialConnection:
         """
         while True:
             try:
-                retrycounter = 0
+                retry_count = 0
                 while self._active:
                     sleep(0.1)
-                    retrycounter += 1
-                    if retrycounter > 10:
+                    retry_count += 1
+                    if retry_count > 10:
                         logger.warning('Serial Class: Listener waiting for more than 1s for port %s to become free on', self._port)
                         break
                 self._active = True
@@ -333,7 +326,7 @@ class SerialConnection:
                     for item in self._listener_messages:
                         self.port.write(b64decode(item['string1']))
                         sleep(0.5)
-                        binary_data = self.port.read(size=self._readbuffer)
+                        binary_data = self.port.read(size=self._read_buffer)
                         if settings['serial_debug']:
                             logger.info('Serial Class: Interactive string 1 binary data: %s', binary_data)
                         try:
@@ -343,7 +336,7 @@ class SerialConnection:
                         if item['string2']:
                             self.port.write(b64decode(item['string2']))
                             sleep(0.5)
-                            binary_data = self.port.read(size=self._readbuffer)
+                            binary_data = self.port.read(size=self._read_buffer)
                             if settings['serial_debug']:
                                 logger.info('Serial Class: Interactive string 2 binary data: %s', binary_data)
                                 try:
@@ -355,7 +348,7 @@ class SerialConnection:
                                                 'portstatus': '%s (%s)' %(self._name, self._port),
                                                 "read_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
                 else:
-                    binary_data = self.port.read(size=self._readbuffer)
+                    binary_data = self.port.read(size=self._read_buffer)
                     if settings['serial_debug']:
                         logger.info('Serial Class: Listener binary data: %s', binary_data)
                     try:
@@ -404,14 +397,14 @@ class SerialConnection:
                 if message_item['api-command'] == command:
                     self.port.write(b64decode(message_item['string1']))
                     sleep(0.5)
-                    binary_data = self.port.read(size=self._readbuffer)
+                    binary_data = self.port.read(size=self._read_buffer)
                     if settings['serial_debug']:
                         logger.info('Serial Class: api string 1 binary data: %s', binary_data)
                     string_data = str(binary_data, 'utf-8')
                     if message_item['string2']:
                         self.port.write(b64decode(message_item['string2']))
                         sleep(0.5)
-                        binary_data = self.port.read(size=self._readbuffer)
+                        binary_data = self.port.read(size=self._read_buffer)
                         if settings['serial_debug']:
                             logger.info('Serial Class: api string 1 binary data: %s', binary_data)
                         string_data = str(binary_data, 'utf-8')
@@ -438,7 +431,6 @@ class SerialConnection:
             self._poll_interval = value
         else:
             self._poll_interval = self._default_poll_interval
-
 
 
 def serial_http_data(item, command):
@@ -483,7 +475,6 @@ def serial_api_checker(item):
     provided item's prefix matches the name of any channel. If a match is found,
     the function returns True, otherwise it returns False.
     """
-
     for channel in serial_channels.values():
         if item[:len(channel.name())] == channel.name():
             return True
